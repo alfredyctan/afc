@@ -1,0 +1,6 @@
+alias hgc='history | grep "git commit"'
+alias gaa='git add -A'
+alias gcm='git commit -m'
+alias grh='git reset --hard'
+alias gss='git stash save'
+alias gsp='git stash pop'

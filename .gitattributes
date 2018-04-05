@@ -1,0 +1,23 @@
+* text=auto
+
+*.java text
+*.properties text
+*.xml text
+*.yml text
+*.yaml text
+*.sh text eol=lf
+*.txt text
+*.html text
+*.htm text
+*.dockerfile text
+*.Dockerfile text
+
+# Denote all files that are truly binary and should not be modified.
+*.jks binary
+*.keystore binary
+*.jar binary
+*.zip binary
+*.tar.gz binary
+*.jpg binary
+*.png binary
+*.gif binary

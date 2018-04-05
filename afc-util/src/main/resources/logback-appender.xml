@@ -1,0 +1,14 @@
+<included>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<conversionRule conversionWord="tid" converterClass="org.afc.logging.ThreadIdConverter" />
+	<appender name="MAIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>${FILE_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [${LOG_LEVEL_PATTERN:-%5p}][%5.5X{SDC}][%5.5tid][%-40.40logger{39}] : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${sys.log}/${sys.service}.${sys.cluster}.${sys.instance}.%d{yyyy-MM-dd}.log.%i</fileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>14</maxHistory>
+		</rollingPolicy>
+	</appender>
+</included>

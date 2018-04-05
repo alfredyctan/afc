@@ -1,0 +1,277 @@
+{{! customized from swagger-codegen-2.2.3 }}
+{{#vendorExtensions.x-jpa-table}}
+import javax.persistence.*;
+{{/vendorExtensions.x-jpa-table}}
+{{#vendorExtensions.x-jpa-id-class}}
+import java.io.Serializable;
+{{/vendorExtensions.x-jpa-id-class}}
+
+/**
+* {{#description}}{{.}}{{/description}}{{^description}}{{classname}}{{/description}}
+*/{{#description}}
+@ApiModel(description = "{{{description}}}"){{/description}}
+{{#vendorExtensions.x-jpa-table}}
+@Entity
+@Table(name = "{{vendorExtensions.x-jpa-table}}"{{#vendorExtensions.x-jpa-catalog}}, catalog = "{{vendorExtensions.x-jpa-catalog}}"{{/vendorExtensions.x-jpa-catalog}}{{#vendorExtensions.x-jpa-schema}}, schema = "{{vendorExtensions.x-jpa-schema}}"{{/vendorExtensions.x-jpa-schema}})
+{{/vendorExtensions.x-jpa-table}}
+{{#vendorExtensions.x-jpa-id-class}}
+@IdClass({{classname}}.PrimaryKey.class)
+{{/vendorExtensions.x-jpa-id-class}}
+{{>generatedAnnotation}}{{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}
+public class {{classname}} {{#parent}}extends {{{parent}}} {{/parent}}{{#parcelableModel}}implements Parcelable {{#serializableModel}}, Serializable {{/serializableModel}}{{/parcelableModel}}{{^parcelableModel}}{{#serializableModel}}implements Serializable {{/serializableModel}}{{/parcelableModel}}{
+{{#serializableModel}}
+	private static final long serialVersionUID = 1L;
+
+{{/serializableModel}}
+	{{#vars}}
+		{{#isEnum}}
+		{{^isContainer}}
+{{>modelInnerEnum}}
+		{{/isContainer}}
+		{{/isEnum}}
+		{{#items.isEnum}}
+			{{#items}}
+			{{^isContainer}}
+{{>modelInnerEnum}}
+			{{/isContainer}}
+			{{/items}}
+		{{/items.isEnum}}
+
+	{{#vendorExtensions.x-jpa-id}}
+	@Id
+	{{/vendorExtensions.x-jpa-id}}
+	{{#vendorExtensions.x-jpa-column}}
+	@Column(name = "{{vendorExtensions.x-jpa-column}}"{{#vendorExtensions.x-jpa-length}}, length = {{vendorExtensions.x-jpa-length}}{{/vendorExtensions.x-jpa-length}}{{#vendorExtensions.x-jpa-precision}}, precision = {{vendorExtensions.x-jpa-precision}}{{/vendorExtensions.x-jpa-precision}}{{#vendorExtensions.x-jpa-scale}}, scale = {{vendorExtensions.x-jpa-scale}}{{/vendorExtensions.x-jpa-scale}}{{#vendorExtensions.x-jpa-unique}}, unique = {{vendorExtensions.x-jpa-unique}}{{/vendorExtensions.x-jpa-unique}}{{#vendorExtensions.x-jpa-nullable}}, nullable = {{vendorExtensions.x-jpa-nullable}}{{/vendorExtensions.x-jpa-nullable}}{{#vendorExtensions.x-jpa-insertable}}, insertable = {{vendorExtensions.x-jpa-insertable}}{{/vendorExtensions.x-jpa-insertable}}{{#vendorExtensions.x-jpa-updatable}}, updatable = {{vendorExtensions.x-jpa-updatable}}{{/vendorExtensions.x-jpa-updatable}}{{#vendorExtensions.x-jpa-table}}, table = "{{vendorExtensions.x-jpa-table}}"{{/vendorExtensions.x-jpa-table}})
+	{{/vendorExtensions.x-jpa-column}}
+	{{#vendorExtensions.x-jpa-lob}}
+	@Lob
+	{{/vendorExtensions.x-jpa-lob}}
+	{{#jackson}}
+	@JsonProperty("{{baseName}}")
+	{{/jackson}}
+	{{#gson}}
+	@SerializedName("{{baseName}}")
+	{{/gson}}
+	private {{{datatypeWithEnum}}} {{name}} = {{{defaultValue}}};
+	{{/vars}}
+
+	{{#vendorExtensions.x-jpa-version}}
+	@Version
+	private Long version;
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+	{{/vendorExtensions.x-jpa-version}}
+
+	{{#vars}}
+	{{^isReadOnly}}
+	public {{classname}} {{name}}({{{datatypeWithEnum}}} {{name}}) {
+		this.{{name}} = {{name}};
+		return this;
+	}
+	{{#isListContainer}}
+
+	public {{classname}} add{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
+		this.{{name}}.add({{name}}Item);
+		return this;
+	}
+	{{/isListContainer}}
+	{{#isMapContainer}}
+
+	public {{classname}} put{{nameInCamelCase}}Item(String key, {{{items.datatypeWithEnum}}} {{name}}Item) {
+		this.{{name}}.put(key, {{name}}Item);
+		return this;
+	}
+	{{/isMapContainer}}
+
+	{{/isReadOnly}}
+	/**
+	{{#description}}
+	 * {{{description}}}
+	{{/description}}
+	{{^description}}
+	 * Get {{name}}
+	{{/description}}
+	{{#minimum}}
+	 * minimum: {{minimum}}
+	{{/minimum}}
+	{{#maximum}}
+	 * maximum: {{maximum}}
+	{{/maximum}}
+	 * @return {{name}}
+	 **/
+{{#useBeanValidation}}{{>beanValidation}}{{/useBeanValidation}}	@ApiModelProperty({{#example}}example = "{{example}}", {{/example}}{{#required}}required = {{required}}, {{/required}}value = "{{{description}}}")
+{{#vendorExtensions.extraAnnotation}}
+	{{{vendorExtensions.extraAnnotation}}}
+{{/vendorExtensions.extraAnnotation}}
+	public {{{datatypeWithEnum}}} {{getter}}() {
+		return {{name}};
+	}
+	{{^isReadOnly}}
+
+	public void {{setter}}({{{datatypeWithEnum}}} {{name}}) {
+		this.{{name}} = {{name}};
+	}
+	{{/isReadOnly}}
+
+	{{/vars}}
+
+{{^supportJava6}}
+	@Override
+	public boolean equals(java.lang.Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}{{#hasVars}}
+		{{classname}} {{classVarName}} = ({{classname}}) o;
+		return {{#vars}}Objects.equals(this.{{name}}, {{classVarName}}.{{name}}){{#hasMore}} &&
+				{{/hasMore}}{{/vars}}{{#parent}} &&
+				super.equals(o){{/parent}};{{/hasVars}}{{^hasVars}}
+		return {{#parent}}super.equals(o){{/parent}}{{^parent}}true{{/parent}};{{/hasVars}}
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash({{#vars}}{{name}}{{#hasMore}}, {{/hasMore}}{{/vars}}{{#parent}}{{#hasVars}}, {{/hasVars}}super.hashCode(){{/parent}});
+	}
+
+{{/supportJava6}}
+{{#supportJava6}}
+	@Override
+	public boolean equals(java.lang.Object o) {
+	if (this == o) {
+		return true;
+	}
+	if (o == null || getClass() != o.getClass()) {
+		return false;
+	}{{#hasVars}}
+		{{classname}} {{classVarName}} = ({{classname}}) o;
+		return {{#vars}}ObjectUtils.equals(this.{{name}}, {{classVarName}}.{{name}}){{#hasMore}} &&
+		{{/hasMore}}{{/vars}}{{#parent}} &&
+		super.equals(o){{/parent}};{{/hasVars}}{{^hasVars}}
+		return true;{{/hasVars}}
+	}
+
+	@Override
+	public int hashCode() {
+		return ObjectUtils.hashCodeMulti({{#vars}}{{name}}{{#hasMore}}, {{/hasMore}}{{/vars}}{{#parent}}{{#hasVars}}, {{/hasVars}}super.hashCode(){{/parent}});
+	}
+
+{{/supportJava6}}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("class {{classname}} {\n");
+		{{#parent}}sb.append("		").append(toIndentedString(super.toString())).append("\n");{{/parent}}
+		{{#vars}}sb.append("		{{name}}: ").append(toIndentedString({{name}})).append("\n");
+		{{/vars}}sb.append("}");
+		return sb.toString();
+	}
+
+	/**
+	 * Convert the given object to string with each line indented by 4 spaces
+	 * (except the first line).
+	 */
+	private String toIndentedString(java.lang.Object o) {
+		if (o == null) {
+			return "null";
+		}
+		return o.toString().replace("\n", "\n		");
+	}
+	
+	{{#parcelableModel}}
+	public void writeToParcel(Parcel out, int flags) {
+		{{#parent}} super.writeToParcel(out, flags); {{/parent}} {{#vars}}
+		out.writeValue({{name}});
+		{{/vars}}
+	}
+
+	public {{classname}}() {
+		super();
+	}
+
+	{{classname}}(Parcel in) {
+		{{#parent}} super(in); {{/parent}}
+		{{#vars}}
+		{{#isContainer}}
+		{{#complexType}}
+		{{name}} = ({{{datatypeWithEnum}}})in.readValue({{complexType}}.class.getClassLoader());
+		{{/complexType}}
+		{{^complexType}}
+		{{name}} = ({{{datatypeWithEnum}}})in.readValue(null);
+		{{/complexType}}
+		{{/isContainer}}
+		{{^isContainer}}
+		{{name}} = ({{{datatypeWithEnum}}})in.readValue(null);
+		{{/isContainer}}
+		{{/vars}}
+	}
+	
+	public int describeContents() {
+		return 0;
+	}
+
+	public static final Parcelable.Creator<{{classname}}> CREATOR = new Parcelable.Creator<{{classname}}>() {
+		public {{classname}} createFromParcel(Parcel in) {
+			return new {{classname}}(in);
+		}
+		public {{classname}}[] newArray(int size) {
+			return new {{classname}}[size];
+		}
+	};
+	{{/parcelableModel}}
+
+	{{#vendorExtensions.x-jpa-id-class}}
+	public static class PrimaryKey implements Serializable {
+
+		private static final long serialVersionUID = 1L;
+		
+		public PrimaryKey() {}	
+		
+		public PrimaryKey({{#vars}}{{#vendorExtensions.x-jpa-id}}{{^-first}}, {{/-first}}{{{datatypeWithEnum}}} {{name}}{{/vendorExtensions.x-jpa-id}}{{/vars}}) {
+		{{#vars}}{{#vendorExtensions.x-jpa-id}}	this.{{name}} = {{name}};
+		{{/vendorExtensions.x-jpa-id}}{{/vars}}}
+		
+		{{#vars}}{{#vendorExtensions.x-jpa-id}}private {{{datatypeWithEnum}}} {{name}};
+		{{/vendorExtensions.x-jpa-id}}{{/vars}}
+		
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			{{#vars}}{{#vendorExtensions.x-jpa-id}}result = prime * result + (({{name}} == null) ? 0 : {{name}}.hashCode());
+			{{/vendorExtensions.x-jpa-id}}{{/vars}}return result;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			} 
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			PrimaryKey other = (PrimaryKey) obj;
+			{{#vars}}{{#vendorExtensions.x-jpa-id}}if ({{name}} == null) {
+				if (other.{{name}} != null) {
+					return false;
+				}
+			} else if (!{{name}}.equals(other.{{name}})) {
+				return false;
+			}
+			{{/vendorExtensions.x-jpa-id}}{{/vars}}return true;
+		}
+	}
+	{{/vendorExtensions.x-jpa-id-class}}
+}

@@ -1,0 +1,44 @@
+#docker related
+alias dil='docker image ls -a'
+alias dcl='docker container ls -a '
+alias dsl='docker service ls -a '
+
+function iid() {
+	dil --format "{{.ID}} {{.Repository}} {{.Tag}}" | grep -e $1 | cut -d " " -f 1
+}
+
+function cid() {
+	dcl --format "{{.ID}} {{.Image}} {{.Names}}" | grep -e $1 | cut -d " " -f 1
+}
+
+function sid() {
+	dsl --format "{{.ID}} {{.Image}} {{.Names}}" | grep -e $1 | cut -d " " -f 1
+}
+
+function drmi() {
+	docker image rm $(iid $1)
+} 
+
+function dcr() {
+	docker container rm $(cid $1)
+} 
+
+function dsr() {
+	docker service rm $(sid $1)
+} 
+
+function des() {
+	docker exec -i -t $(cid $1) /bin/bash
+} 
+
+function de() {
+	PATTERN=$1; shift 1;
+	docker exec -i -t $(cid $PATTERN) $*
+} 
+
+
+
+
+
+
+

@@ -1,0 +1,60 @@
+swagger: '2.0'
+info:
+  title: Swagger JPA Model Generation
+  description: Swagger JPA Model Generation
+  version: '@project.version@'
+schemes:
+  - https
+basePath: /
+produces:
+  - application/json
+paths:
+ '/jpa':
+    get:
+      operationId: jpa
+      description: model generation
+      responses:
+        default:
+          schema:
+            $ref: '#/definitions/Account'
+definitions:
+  Account:
+    type: object
+    description: 'Account schema'
+    x-jpa-version: true
+    x-jpa-table: account
+    x-jpa-catalog: account_catalog
+    x-jpa-schema: account_schema
+    x-jpa-id-class: true
+    properties:
+      accountId:
+        type: string
+        x-jpa-id: true
+        x-jpa-column: account_id
+        x-jpa-length: 255
+      recordDate:
+        type: string
+        format: date
+        x-jpa-id: true
+        x-jpa-column: record_date
+      content:
+        type: string
+        x-jpa-column: content
+        x-jpa-lob: true
+      count:
+        type: string
+        x-jpa-column: count
+      allColumnProperty:
+        type: string
+        x-jpa-column: all_column_prop
+        x-jpa-length: 20
+        x-jpa-precision: 1
+        x-jpa-scale: 2
+        x-jpa-unique: true
+        x-jpa-nullable: false
+        x-jpa-insertable: true
+        x-jpa-updatable: true
+        x-jpa-table: 'other'
+
+        
+        

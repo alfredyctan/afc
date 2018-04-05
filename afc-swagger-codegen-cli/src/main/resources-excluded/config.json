@@ -1,0 +1,9 @@
+{
+	"basePackage": "org.afc.example.swagger.jpa",
+	"apiPackage": "org.afc.example.swagger.jpa.api",
+	"configPackage": "org.afc.example.swagger.jpa.config",
+	"modelPackage": "org.afc.example.swagger.jpa.model",
+	"delegatePattern": "true",
+	"hideGenerationTimestamp": "true"
+}
+

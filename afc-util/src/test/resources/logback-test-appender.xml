@@ -1,0 +1,24 @@
+<included>
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<conversionRule conversionWord="tid" converterClass="org.afc.logging.ThreadIdConverter" />
+
+	<!-- if you want to suppress some full stack trace -->
+	<!-- <property name="EXPT_SUPPRESS" value="logger.contains(&quot;RedirectingEurekaHttpClient&quot;) || logger.contains(&quot;DiscoveryClient&quot;)" /> -->
+
+	<!-- if you want to show only the exception message not the stack trace -->
+	<!-- make sure it is also includein the SUPPRESS_EXPR -->
+	<!-- <property name="EXPT_MSG_ONLY" value="logger.contains(&quot;RedirectingEurekaHttpClient&quot;) || logger.contains(&quot;DiscoveryClient&quot;)" /> -->
+
+	<evaluator name="EXPT">
+		<expression>${EXPT_SUPPRESS:-false}</expression>
+	</evaluator>
+	<evaluator name="EXPT_MSG">
+		<expression>!${EXPT_MSG_ONLY:-false}</expression>
+	</evaluator>
+	
+	<appender name="MAIN" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${CONSOLE_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} [%clr(${LOG_LEVEL_PATTERN:-%5p})][%clr(%5.5X{SDC}){magenta}]%clr([%5.5tid]){faint}%clr([%-40.40logger{39}]){cyan} %clr(:){faint} %m%n%xEx{full,EXPT}%xEx{0,EXPT_MSG}}</pattern>
+		</encoder>
+	</appender>
+</included>

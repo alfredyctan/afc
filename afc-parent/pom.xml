@@ -35,8 +35,8 @@
 		<artifact.jmock.version>2.8.3</artifact.jmock.version>
 		<artifact.spring-boot.version>2.0.0.RELEASE</artifact.spring-boot.version>
 		<artifact.spring-cloud.version>Finchley.M8</artifact.spring-cloud.version>
+		<artifact.spring-data.version>Fowler-SR2</artifact.spring-data.version>
 
-		<artifact.afc-swagger-mustache.version>1.0.0-SNAPSHOT</artifact.afc-swagger-mustache.version>
 		<swagger.serializable-model>false</swagger.serializable-model>
 	</properties>
 	<scm>
@@ -97,14 +97,6 @@
 				<version>${artifact.jodatime.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.afc</groupId>
-				<artifactId>afc-swagger-mustache</artifactId>
-				<version>${artifact.afc-swagger-mustache.version}</version>
-				<classifier>pack</classifier>
-				<type>tar.gz</type>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${artifact.junit.version}</version>
@@ -141,6 +133,13 @@
 				<version>${artifact.spring-cloud.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.afc</groupId>
+				<artifactId>afc-scripts</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+				<classifier>pack</classifier>
+				<type>tar.gz</type>
 			</dependency>
 			<dependency>
 				<groupId>org.afc</groupId>
@@ -1294,6 +1293,62 @@
 										<argument>${project.artifactId}</argument>
 										<argument>${project.version}</argument>
 									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>nodejs</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<!-- you can't use property in child to enable profile from parent -->
+				<file>
+					<exists>${basedir}/package.json</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.eirslett</groupId>
+						<artifactId>frontend-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>install-node</id>
+								<goals>
+									<goal>install-node-and-npm</goal>
+									<goal>install-node-and-yarn</goal>
+								</goals>
+								<phase>initialize</phase>
+								<configuration>
+									<installDirectory>.</installDirectory>
+									<nodeVersion>v8.11.1</nodeVersion>
+									<npmVersion>5.6.0</npmVersion>
+									<yarnVersion>v1.6.0</yarnVersion>
+								</configuration>
+							</execution>
+							<execution>
+								<id>yarn-install</id>
+								<goals>
+									<goal>yarn</goal>
+								</goals>
+								<phase>initialize</phase>
+								<configuration>
+									<installDirectory>.</installDirectory>
+									<arguments>install</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>yarn-dist</id>
+								<goals>
+									<goal>yarn</goal>
+								</goals>
+								<phase>compile</phase>
+								<configuration>
+									<installDirectory>.</installDirectory>
+									<arguments>dist</arguments>
 								</configuration>
 							</execution>
 						</executions>

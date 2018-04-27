@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.afc</groupId>
@@ -24,8 +25,6 @@
 		<docker.registry.release>localhost:8181</docker.registry.release>
 		<docker.registry>localhost:8182</docker.registry>
 
-		<artifact.swagger-codegen.version>2.2.3</artifact.swagger-codegen.version>
-		
 		<artifact.springfox.version>2.5.0</artifact.springfox.version>
 		<artifact.swagger-core.version>1.5.12</artifact.swagger-core.version>
 		<artifact.okhttp.version>2.7.5</artifact.okhttp.version>
@@ -46,6 +45,20 @@
 		<developerConnection>scm:git:https://github.com/alfredyctan/afc.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
+	<distributionManagement>
+		<repository>
+			<id>afc-release</id>
+			<name>afc-release</name>
+			<url>http://localhost:8081/repository/afc-release</url>
+			<uniqueVersion>true</uniqueVersion>
+		</repository>
+		<snapshotRepository>
+			<id>afc-snapshot</id>
+			<name>afc-snapshot</name>
+			<url>http://localhost:8081/repository/afc-snapshot</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -91,7 +104,6 @@
 				<type>tar.gz</type>
 				<scope>provided</scope>
 			</dependency>
-			<!-- test dependencies -->
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -130,6 +142,14 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.afc</groupId>
+				<artifactId>afc-swagger-mustache</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+				<classifier>pack</classifier>
+				<type>tar.gz</type>
+				<scope>provided</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -149,6 +169,14 @@
 			</resource>
 			<resource>
 				<directory>src/main/webapp</directory>
+			</resource>
+			<resource>
+				<directory>src/main/javascript</directory>
+				<targetPath>${project.build.directory}/javascript</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/python</directory>
+				<targetPath>${project.build.directory}/python</targetPath>
 			</resource>
 			<resource>
 				<directory>src/main/config</directory>
@@ -185,15 +213,19 @@
 			<testResource>
 				<directory>src/test/filters</directory>
 			</testResource>
+			<testResource>
+				<directory>src/test/javascript</directory>
+				<targetPath>${project.build.directory}/test-javascript</targetPath>
+			</testResource>
+			<testResource>
+				<directory>src/test/python</directory>
+				<targetPath>${project.build.directory}/test-python</targetPath>
+			</testResource>
 		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>${maven.compiler.source}</source>
-					<target>${maven.compiler.target}</target>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
@@ -202,28 +234,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<updateReleaseInfo>true</updateReleaseInfo>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
-				<configuration>
-					<tagNameFormat>@{project.artifactId}-@{project.version}</tagNameFormat>
-					<preparationGoals>clean install</preparationGoals>
-					<pushChanges>true</pushChanges>
-					<updateDependencies>false</updateDependencies>
-					<releaseProfiles>release-mode</releaseProfiles>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.afc.maven.scm</groupId>
-						<artifactId>maven-scm-provider-git-flatten</artifactId>
-						<version>1.9.4</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -232,26 +246,10 @@
 					<execution>
 						<id>add-sources</id>
 						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>target/generated-sources</source>
-							</sources>
-						</configuration>
 					</execution>
 					<execution>
 						<id>add-test-sources</id>
 						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>add-test-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>target/generated-test-sources</source>
-							</sources>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -259,41 +257,22 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<skipIfEmpty>true</skipIfEmpty>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
+						<id>update-dependency</id>
+						<phase>validate</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -302,20 +281,159 @@
 			<plugins>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>versions-maven-plugin</artifactId>
-					<version>2.5</version>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>3.0.0</version>
+					<executions>
+						<execution>
+							<id>add-sources</id>
+							<phase>none</phase>
+							<goals>
+								<goal>add-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>target/generated-sources</source>
+								</sources>
+							</configuration>
+						</execution>
+						<execution>
+							<id>add-test-sources</id>
+							<phase>none</phase>
+							<goals>
+								<goal>add-test-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>target/generated-test-sources</source>
+								</sources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.7.0</version>
 					<configuration>
-						<includes>
-							<include>org.afc:*</include>
-						</includes>
-						<excludeReactor>false</excludeReactor>
-						<processParent>true</processParent>
-						<processDependencies>true</processDependencies>
-						<processDependencyManagement>true</processDependencyManagement>
+						<source>${maven.compiler.source}</source>
+						<target>${maven.compiler.target}</target>
 					</configuration>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.1.0</version>
+					<configuration>
+						<skipIfEmpty>true</skipIfEmpty>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>jar</goal>
+								<goal>test-jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.0.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.0.0</version>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.2</version>
+					<configuration>
+						<updateReleaseInfo>true</updateReleaseInfo>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.3</version>
+					<configuration>
+						<tagNameFormat>@{project.artifactId}-@{project.version}</tagNameFormat>
+						<preparationGoals>clean install</preparationGoals>
+						<pushChanges>true</pushChanges>
+						<updateDependencies>false</updateDependencies>
+						<releaseProfiles>release-mode</releaseProfiles>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.afc.maven.scm</groupId>
+							<artifactId>maven-scm-provider-git-flatten</artifactId>
+							<version>1.9.4</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>com.github.eirslett</groupId>
+					<artifactId>frontend-maven-plugin</artifactId>
+					<version>1.6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.6.0</version>
+				</plugin>
+				<plugin>
+					<groupId>pl.project13.maven</groupId>
+					<artifactId>git-commit-id-plugin</artifactId>
+					<version>2.2.4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<version>2.5</version>
+					<executions>
+						<execution>
+							<id>update-dependency</id>
+							<phase>none</phase>
+							<goals>
+								<goal>use-latest-versions</goal>
+							</goals>
+							<configuration>
+								<includes>
+									<include>org.afc:*</include>
+								</includes>
+								<allowMajorUpdates>true</allowMajorUpdates>
+								<allowMinorUpdates>true</allowMinorUpdates>
+								<allowIncrementalUpdates>true</allowIncrementalUpdates>
+								<allowSnapshots>false</allowSnapshots>
+								<excludeReactor>false</excludeReactor>
+								<processParent>true</processParent>
+								<processDependencies>true</processDependencies>
+								<processDependencyManagement>true</processDependencyManagement>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
+					<version>3.1.0</version>
 					<executions>
 						<execution>
 							<id>copy-dependencies</id>
@@ -339,6 +457,20 @@
 								<includeClassifiers>pack</includeClassifiers>
 								<includeTypes>tar.gz</includeTypes>
 								<outputDirectory>${project.build.directory}</outputDirectory>
+							</configuration>
+						</execution>
+						<execution>
+							<id>copy-scripts</id>
+							<phase>none</phase>
+							<goals>
+								<goal>unpack-dependencies</goal>
+							</goals>
+							<configuration>
+								<includeGroupIds>org.afc</includeGroupIds>
+								<includeArtifactIds>afc-scripts</includeArtifactIds>
+								<includeClassifiers>pack</includeClassifiers>
+								<includeTypes>tar.gz</includeTypes>
+								<outputDirectory>${project.build.directory}/scripts.unfiltered</outputDirectory>
 							</configuration>
 						</execution>
 					</executions>
@@ -485,7 +617,7 @@
 								<resources>
 									<resource>
 										<directory>target/swagger-js/generated-sources</directory>
-										<targetPath>static</targetPath>
+										<targetPath>public/js</targetPath>
 									</resource>
 								</resources>
 							</configuration>
@@ -536,10 +668,37 @@
 											<goal>unpack-dependencies</goal>
 											<goal>copy-dependencies</goal>
 											<goal>copy</goal>
+											<goal>build-classpath</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore/>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>exec-maven-plugin</artifactId>
+										<versionRange>[1.6.0,)</versionRange>
+										<goals>
+											<goal>exec</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-clean-plugin</artifactId>
+										<versionRange>[2.5,)</versionRange>
+										<goals>
+											<goal>clean</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
@@ -554,6 +713,7 @@
 			<id>release-mode</id>
 			<properties>
 				<deployFileUrl>${project.distributionManagement.repository.url}</deployFileUrl>
+				<docker.registry>${docker.registry.release}</docker.registry>
 			</properties>
 		</profile>
 		<profile>
@@ -579,6 +739,7 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
 						<executions>
 							<execution>
@@ -588,6 +749,7 @@
 						</executions>
 					</plugin>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-resources-plugin</artifactId>
 						<executions>
 							<execution>
@@ -608,7 +770,7 @@
 								<id>generate-java</id>
 								<phase>generate-sources</phase>
 							</execution>
-						</executions>						
+						</executions>
 					</plugin>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
@@ -657,18 +819,19 @@
 			</dependencies>
 			<build>
 				<plugins>
+					<!-- <plugin> -->
+					<!-- <groupId>io.swagger</groupId> -->
+					<!-- <artifactId>swagger-codegen-maven-plugin</artifactId> -->
+					<!-- <executions> -->
+					<!-- <execution> -->
+					<!-- <configuration> -->
+					<!-- <templateDirectory>src/main/resources-excluded/mustache</templateDirectory> -->
+					<!-- </configuration> -->
+					<!-- </execution> -->
+					<!-- </executions> -->
+					<!-- </plugin> -->
 					<plugin>
-						<groupId>io.swagger</groupId>
-						<artifactId>swagger-codegen-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<configuration>
-									<templateDirectory>src/main/resources-excluded/mustache</templateDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
 						<executions>
 							<execution>
@@ -710,9 +873,10 @@
 								<id>generate-javascript</id>
 								<phase>generate-sources</phase>
 							</execution>
-						</executions>						
+						</executions>
 					</plugin>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-resources-plugin</artifactId>
 						<executions>
 							<execution>
@@ -729,6 +893,31 @@
 										</resource>
 									</resources>
 									<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-clean-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>swagger-exclude</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>clean</goal>
+								</goals>
+								<configuration>
+									<excludeDefaultDirectories>true</excludeDefaultDirectories>
+									<filesets>
+										<fileset>
+											<directory>${project.build.directory}/generated-sources</directory>
+											<includes>
+												<!-- edited sources -->
+												<include>**/HomeController.java</include>
+											</includes>
+										</fileset>
+									</filesets>
 								</configuration>
 							</execution>
 						</executions>
@@ -798,8 +987,35 @@
 					<exists>${basedir}/src/main/resources/bootstrap.yml</exists>
 				</file>
 			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.afc</groupId>
+					<artifactId>afc-scripts</artifactId>
+					<classifier>pack</classifier>
+					<type>tar.gz</type>
+				</dependency>
+			</dependencies>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-scripts</id>
+								<phase>generate-resources</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>filter-scripts</id>
+								<phase>generate-resources</phase>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
@@ -985,7 +1201,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-assembly-plugin</artifactId>
-						<version>3.1.0</version>
 						<executions>
 							<execution>
 								<id>assembly-package</id>
@@ -1023,57 +1238,8 @@
 			</activation>
 			<properties>
 			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>org.afc</groupId>
-					<artifactId>afc-scripts</artifactId>
-					<classifier>pack</classifier>
-					<type>tar.gz</type>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
-					<plugin>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-scripts</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>unpack-dependencies</goal>
-								</goals>
-								<configuration>
-									<includeGroupIds>org.afc</includeGroupIds>
-									<includeArtifactIds>afc-scripts</includeArtifactIds>
-									<includeClassifiers>pack</includeClassifiers>
-									<includeTypes>tar.gz</includeTypes>
-									<outputDirectory>${project.build.directory}/scripts.unfiltered</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>filter-scripts</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>resources</goal>
-								</goals>
-								<configuration>
-									<resources>
-										<resource>
-											<directory>${project.build.directory}/scripts.unfiltered</directory>
-											<filtering>true</filtering>
-											<targetPath>scripts</targetPath>
-										</resource>
-									</resources>
-									<outputDirectory>${project.build.directory}</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
@@ -1089,10 +1255,12 @@
 									<workingDirectory>target</workingDirectory>
 									<executable>/bin/sh</executable>
 									<arguments>
-										<argument>scripts/docker/docker-build.sh</argument>
-										<argument>${docker.registry}/${project.groupId}/${project.artifactId}:${project.version}</argument>
-										<argument>resources-excluded/docker/build.dockerfile</argument>
+										<argument>scripts/build/docker-build.sh</argument>
+										<argument>${docker.registry}</argument>
+										<argument>${project.groupId}</argument>
 										<argument>${project.artifactId}</argument>
+										<argument>${project.version}</argument>
+										<argument>resources-excluded/docker/build.dockerfile</argument>
 									</arguments>
 								</configuration>
 							</execution>
@@ -1120,9 +1288,11 @@
 									<workingDirectory>target</workingDirectory>
 									<executable>/bin/sh</executable>
 									<arguments>
-										<argument>scripts/docker/docker-push.sh</argument>
+										<argument>scripts/build/docker-push.sh</argument>
 										<argument>${docker.registry}</argument>
-										<argument>${project.groupId}/${project.artifactId}:${project.version}</argument>
+										<argument>${project.groupId}</argument>
+										<argument>${project.artifactId}</argument>
+										<argument>${project.version}</argument>
 									</arguments>
 								</configuration>
 							</execution>
@@ -1132,18 +1302,4 @@
 			</build>
 		</profile>
 	</profiles>
-	<distributionManagement>
-		<repository>
-			<id>afc-release</id>
-			<name>afc-release</name>
-			<url>http://localhost:8081/repository/afc-release</url>
-			<uniqueVersion>true</uniqueVersion>
-		</repository>
-		<snapshotRepository>
-			<id>afc-snapshot</id>
-			<name>afc-snapshot</name>
-			<url>http://localhost:8081/repository/afc-snapshot</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-	</distributionManagement>
 </project>

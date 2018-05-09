@@ -23,7 +23,7 @@ public class UIConfigWebMvcAdapter implements WebMvcConfigurer {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/config/**")
-			.addResourceLocations("classpath:/ui/" + env + "/", "classpath:/ui/base/")
+			.addResourceLocations("classpath:/ui/" + env + "/", "classpath:/ui/common/")
 			.setCachePeriod(getSeconds(resourceProperties.getCache().getPeriod()))
 			.setCacheControl(resourceProperties.getCache().getCachecontrol().toHttpCacheControl());
 	}

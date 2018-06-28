@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="java-members" deleted="false" description="" enabled="true" id="org.eclipse.jdt.ui.templates.test_junit4" name="test4">@${testType:newType(org.junit.Test)}
+public void ${testName}() throws Exception {
+	${staticImport:importStatic('org.hamcrest.MatcherAssert.*', 'org.hamcrest.Matchers.*', 'org.junit.Assert.fail')}${cursor}
+}
+</template><template autoinsert="true" context="java-members" deleted="false" description="" enabled="true" name="before">	@Rule&#13;
+	public TestName name = new TestName();&#13;
+&#13;
+&#13;
+	@${testType:newType(org.junit.Before)}&#13;
+	public void setUp() throws Exception {&#13;
+		${cursor}JUnit4Util.startCurrentTest(getClass(), name);${staticImport:importStatic('org.junit.Assert.*')}${import:import('org.junit.Rule', 'org.junit.rules.TestName', 'org.afc.util.JUnit4Util')}&#13;
+	}</template><template autoinsert="true" context="java-members" deleted="false" description="" enabled="true" name="after">	@${testType:newType(org.junit.After)}&#13;
+	public void tearDown() throws Exception {&#13;
+		${cursor}JUnit4Util.endCurrentTest(getClass(), name);${staticImport:importStatic('org.junit.Assert.*')}${import:import('org.junit.Rule', 'org.junit.rules.TestName', 'org.afc.util.JUnit4Util')}&#13;
+	}&#13;
+</template><template autoinsert="true" context="java" deleted="false" description="" enabled="true" name="log">&#13;
+	private static final Logger logger = LoggerFactory.getLogger(${enclosing_type}.class);${cursor}${import:import('org.slf4j.Logger', 'org.slf4j.LoggerFactory')}&#13;
+</template></templates>

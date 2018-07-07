@@ -22,23 +22,25 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
 		<deployFileUrl>${project.distributionManagement.snapshotRepository.url}</deployFileUrl>
-		<docker.registry.release>localhost:8181</docker.registry.release>
-		<docker.registry>localhost:8182</docker.registry>
 
 		<artifact.springfox.version>2.5.0</artifact.springfox.version>
-		<artifact.swagger-core.version>1.5.12</artifact.swagger-core.version>
+		<artifact.swagger.version>1.5.12</artifact.swagger.version>
 		<artifact.okhttp.version>2.7.5</artifact.okhttp.version>
 		<artifact.gson.version>2.6.2</artifact.gson.version>
 		<artifact.jodatime.version>2.9.3</artifact.jodatime.version>
-		<artifact.junit.version>4.12</artifact.junit.version>
-		<artifact.mockito.version>1.10.19</artifact.mockito.version>
 		<artifact.jmock.version>2.8.3</artifact.jmock.version>
 		<artifact.spring-boot.version>2.0.0.RELEASE</artifact.spring-boot.version>
-		<artifact.spring-cloud.version>Finchley.M8</artifact.spring-cloud.version>
-		<artifact.spring-data.version>Fowler-SR2</artifact.spring-data.version>
+		<artifact.spring-data-releasetrain.version>Fowler-SR2</artifact.spring-data-releasetrain.version>
+		<artifact.spring-cloud-dependencies.version>Finchley.M8</artifact.spring-cloud-dependencies.version>
+		<artifact.rabbitmq.version>3.7.5</artifact.rabbitmq.version>
+		<artifact.erlang.version>9.3</artifact.erlang.version>
 
 		<swagger.serializable-model>false</swagger.serializable-model>
+
+		<docker.registry>localhost:8182</docker.registry>
+		<docker.registry.release>localhost:8181</docker.registry.release>
 	</properties>
+
 	<scm>
 		<url>https://github.com/alfredyctan/afc</url>
 		<connection>scm:git:https://github.com/alfredyctan/afc.git</connection>
@@ -64,7 +66,7 @@
 			<dependency>
 				<groupId>io.swagger</groupId>
 				<artifactId>swagger-annotations</artifactId>
-				<version>${artifact.swagger-core.version}</version>
+				<version>${artifact.swagger.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.springfox</groupId>
@@ -96,12 +98,7 @@
 				<artifactId>joda-time</artifactId>
 				<version>${artifact.jodatime.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${artifact.junit.version}</version>
-				<scope>test</scope>
-			</dependency>
+			<!-- test dependencies -->
 			<dependency>
 				<groupId>org.jmock</groupId>
 				<artifactId>jmock</artifactId>
@@ -115,12 +112,6 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>
-				<version>${artifact.mockito.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
 				<version>${artifact.spring-boot.version}</version>
@@ -130,21 +121,26 @@
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${artifact.spring-cloud.version}</version>
+				<version>${artifact.spring-cloud-dependencies.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
+				<groupId>commons-cli</groupId>
+				<artifactId>commons-cli</artifactId>
+				<version>1.4</version>
+			</dependency>		
+			<dependency>
 				<groupId>org.afc</groupId>
 				<artifactId>afc-scripts</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<version>1.0.2</version>
 				<classifier>pack</classifier>
 				<type>tar.gz</type>
 			</dependency>
 			<dependency>
 				<groupId>org.afc</groupId>
 				<artifactId>afc-swagger-mustache</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<version>1.0.0</version>
 				<classifier>pack</classifier>
 				<type>tar.gz</type>
 				<scope>provided</scope>
@@ -156,19 +152,15 @@
 		<resources>
 			<resource>
 				<directory>src/main/javascript</directory>
-				<targetPath>${project.build.directory}/javascript</targetPath>
-				<includes>
-					<include>**/*</include>
-				</includes>
-				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*</exclude>
+				</excludes>
 			</resource>
 			<resource>
 				<directory>src/main/python</directory>
-				<targetPath>${project.build.directory}/python</targetPath>
-				<includes>
-					<include>**/*</include>
-				</includes>
-				<filtering>true</filtering>
+				<excludes>
+					<exclude>**/*</exclude>
+				</excludes>
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -229,29 +221,43 @@
 			</testResource>
 			<testResource>
 				<directory>src/test/javascript</directory>
-				<targetPath>${project.build.directory}/test-javascript</targetPath>
+				<excludes>
+					<exclude>**/*</exclude>
+				</excludes>
 			</testResource>
 			<testResource>
 				<directory>src/test/python</directory>
-				<targetPath>${project.build.directory}/test-python</targetPath>
+				<excludes>
+					<exclude>**/*</exclude>
+				</excludes>
 			</testResource>
 		</testResources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<updateReleaseInfo>true</updateReleaseInfo>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<tagNameFormat>@{project.artifactId}-@{project.version}</tagNameFormat>
+					<preparationGoals>clean install</preparationGoals>
+					<pushChanges>true</pushChanges>
+					<updateDependencies>false</updateDependencies>
+					<releaseProfiles>release-mode</releaseProfiles>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -260,10 +266,26 @@
 					<execution>
 						<id>add-sources</id>
 						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>target/generated-sources</source>
+							</sources>
+						</configuration>
 					</execution>
 					<execution>
 						<id>add-test-sources</id>
 						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>target/generated-test-sources</source>
+							</sources>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -271,24 +293,35 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<skipIfEmpty>true</skipIfEmpty>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>versions-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>update-dependency</id>
-						<phase>validate</phase>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -297,56 +330,16 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>3.0.0</version>
-					<executions>
-						<execution>
-							<id>add-sources</id>
-							<phase>none</phase>
-							<goals>
-								<goal>add-source</goal>
-							</goals>
-							<configuration>
-								<sources>
-									<source>target/generated-sources</source>
-								</sources>
-							</configuration>
-						</execution>
-						<execution>
-							<id>add-test-sources</id>
-							<phase>none</phase>
-							<goals>
-								<goal>add-test-source</goal>
-							</goals>
-							<configuration>
-								<sources>
-									<source>target/generated-test-sources</source>
-								</sources>
-							</configuration>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.7.0</version>
-					<configuration>
-						<source>${maven.compiler.source}</source>
-						<target>${maven.compiler.target}</target>
-					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>3.1.0</version>
-					<configuration>
-						<skipIfEmpty>true</skipIfEmpty>
-					</configuration>
-					<executions>
-						<execution>
-							<goals>
-								<goal>test-jar</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -357,25 +350,16 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>3.0.0</version>
-					<configuration>
-						<skip>true</skip>
-					</configuration>
-					<executions>
-						<execution>
-							<id>attach-javadocs</id>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-						</execution>
-					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.5.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>2.8.2</version>
-					<configuration>
-						<updateReleaseInfo>true</updateReleaseInfo>
-					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -386,20 +370,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.5.3</version>
-					<configuration>
-						<tagNameFormat>@{project.artifactId}-@{project.version}</tagNameFormat>
-						<preparationGoals>clean install</preparationGoals>
-						<pushChanges>true</pushChanges>
-						<updateDependencies>false</updateDependencies>
-						<releaseProfiles>release-mode</releaseProfiles>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>org.afc.maven.scm</groupId>
-							<artifactId>maven-scm-provider-git-flatten</artifactId>
-							<version>1.9.4</version>
-						</dependency>
-					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>com.github.eirslett</groupId>
@@ -419,10 +389,11 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>versions-maven-plugin</artifactId>
-					<version>2.5</version>
+					<!-- it is built from 2.6-SNAPSHOT, official 2.5 do not support parent project update -->
+					<version>2.5.1</version>
 					<executions>
 						<execution>
-							<id>update-dependency</id>
+							<id>latest-release</id>
 							<phase>none</phase>
 							<goals>
 								<goal>use-latest-versions</goal>
@@ -430,11 +401,34 @@
 							<configuration>
 								<includes>
 									<include>org.afc:*</include>
+									<include>org.afc.*:*</include>
 								</includes>
+								<generateBackupPoms>false</generateBackupPoms>
 								<allowMajorUpdates>true</allowMajorUpdates>
 								<allowMinorUpdates>true</allowMinorUpdates>
 								<allowIncrementalUpdates>true</allowIncrementalUpdates>
 								<allowSnapshots>false</allowSnapshots>
+								<excludeReactor>false</excludeReactor>
+								<processParent>true</processParent>
+								<processDependencies>true</processDependencies>
+								<processDependencyManagement>true</processDependencyManagement>
+							</configuration>
+						</execution>
+						<execution>
+							<id>latest-snapshot</id>
+							<phase>none</phase>
+							<goals>
+								<goal>use-latest-versions</goal>
+							</goals>
+							<configuration>
+								<includes>
+									<include>${artifact}</include>
+								</includes>
+								<generateBackupPoms>false</generateBackupPoms>
+								<allowMajorUpdates>true</allowMajorUpdates>
+								<allowMinorUpdates>true</allowMinorUpdates>
+								<allowIncrementalUpdates>true</allowIncrementalUpdates>
+								<allowSnapshots>true</allowSnapshots>
 								<excludeReactor>false</excludeReactor>
 								<processParent>true</processParent>
 								<processDependencies>true</processDependencies>
@@ -446,7 +440,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>2.9</version>
 					<executions>
 						<execution>
 							<id>copy-dependencies</id>
@@ -486,11 +480,36 @@
 								<outputDirectory>${project.build.directory}/scripts.unfiltered</outputDirectory>
 							</configuration>
 						</execution>
+						<execution>
+							<id>unpack-erlang-windows</id>
+							<phase>none</phase>
+							<goals>
+								<goal>unpack-dependencies</goal>
+							</goals>
+							<configuration>
+								<includeGroupIds>org.erlang</includeGroupIds>
+								<includeArtifactIds>erl</includeArtifactIds>
+								<outputDirectory>${basedir}/provision</outputDirectory>
+							</configuration>
+						</execution>
+						<execution>
+							<id>unpack-rabbitmq-windows</id>
+							<phase>none</phase>
+							<goals>
+								<goal>unpack-dependencies</goal>
+							</goals>
+							<configuration>
+								<includeGroupIds>com.rabbitmq</includeGroupIds>
+								<includeArtifactIds>rabbitmq-server</includeArtifactIds>
+								<outputDirectory>${basedir}/provision</outputDirectory>
+							</configuration>
+						</execution>
 					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${artifact.spring-boot.version}</version>
 					<executions>
 						<execution>
 							<goals>
@@ -512,7 +531,7 @@
 								<goal>generate</goal>
 							</goals>
 							<configuration>
-								<inputSpec>${project.build.directory}/resources-excluded/swagger/specification.yml</inputSpec>
+								<inputSpec>${project.build.directory}/resources-excluded/swagger/${swagger.specification.prefix}specification.yml</inputSpec>
 								<language>${swagger.language}</language>
 								<configurationFile>${project.basedir}/src/main/resources-excluded/swagger/${swagger.config}</configurationFile>
 								<templateDirectory>${project.build.directory}/mustache</templateDirectory>
@@ -521,6 +540,7 @@
 									<serializableModel>${swagger.serializable-model}</serializableModel>
 									<sourceFolder>generated-sources</sourceFolder>
 									<testSourceFolder>generated-test-sources</testSourceFolder>
+									<dateLibrary>legacy</dateLibrary>
 								</configOptions>
 							</configuration>
 						</execution>
@@ -531,7 +551,7 @@
 								<goal>generate</goal>
 							</goals>
 							<configuration>
-								<inputSpec>${project.build.directory}/resources-excluded/swagger/specification.yml</inputSpec>
+								<inputSpec>${project.build.directory}/resources-excluded/swagger/${swagger.specification.prefix}specification.yml</inputSpec>
 								<language>javascript</language>
 								<configurationFile>${project.basedir}/src/main/resources-excluded/swagger/${swagger.config}</configurationFile>
 								<output>${project.build.directory}/swagger-js</output>
@@ -579,6 +599,7 @@
 					</configuration>
 					<executions>
 						<execution>
+							<!-- it is common to swagger-api and swagger-service -->
 							<id>filter-specification</id>
 							<phase>none</phase>
 							<goals>
@@ -591,7 +612,7 @@
 										<includes>
 											<include>specification.yml</include>
 										</includes>
-										<targetPath>resources-excluded/swagger</targetPath>
+										<targetPath>resources-excluded/swagger/</targetPath>
 										<filtering>true</filtering>
 									</resource>
 								</resources>
@@ -630,9 +651,27 @@
 								<resources>
 									<resource>
 										<directory>target/swagger-js/generated-sources</directory>
-										<targetPath>public/js</targetPath>
+										<targetPath>static/js</targetPath>
 									</resource>
 								</resources>
+								<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							</configuration>
+						</execution>
+						<execution>
+							<id>filter-scripts</id>
+							<phase>none</phase>
+							<goals>
+								<goal>resources</goal>
+							</goals>
+							<configuration>
+								<resources>
+									<resource>
+										<directory>${project.build.directory}/scripts.unfiltered</directory>
+										<filtering>true</filtering>
+										<targetPath>scripts</targetPath>
+									</resource>
+								</resources>
+								<outputDirectory>${project.build.directory}</outputDirectory>
 							</configuration>
 						</execution>
 					</executions>
@@ -678,9 +717,9 @@
 										<artifactId>maven-dependency-plugin</artifactId>
 										<versionRange>*</versionRange>
 										<goals>
-											<goal>unpack-dependencies</goal>
 											<goal>copy-dependencies</goal>
 											<goal>copy</goal>
+											<goal>unpack-dependencies</goal>
 											<goal>build-classpath</goal>
 										</goals>
 									</pluginExecutionFilter>
@@ -714,21 +753,6 @@
 										<ignore />
 									</action>
 								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>com.github.eirslett</groupId>
-										<artifactId>frontend-maven-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
-										<goals>
-											<goal>install-node-and-npm</goal>
-											<goal>install-node-and-yarn</goal>
-											<goal>yarn</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
@@ -737,13 +761,6 @@
 		</pluginManagement>
 	</build>
 	<profiles>
-		<profile>
-			<id>release-mode</id>
-			<properties>
-				<deployFileUrl>${project.distributionManagement.repository.url}</deployFileUrl>
-				<docker.registry>${docker.registry.release}</docker.registry>
-			</properties>
-		</profile>
 		<profile>
 			<id>swagger-api</id>
 			<activation>
@@ -755,6 +772,7 @@
 			<properties>
 				<swagger.language>java</swagger.language>
 				<swagger.config>api-config.json</swagger.config>
+				<swagger.specification.prefix />
 			</properties>
 			<dependencies>
 				<dependency>
@@ -777,7 +795,6 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-resources-plugin</artifactId>
 						<executions>
 							<execution>
@@ -786,7 +803,15 @@
 							</execution>
 							<execution>
 								<id>copy-swagger-readme</id>
+								<!-- <phase>process-resources</phase> -->
 								<phase>none</phase>
+							</execution>
+							<execution>
+								<id>copy-swagger-js</id>
+								<phase>process-sources</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
 							</execution>
 						</executions>
 					</plugin>
@@ -796,6 +821,10 @@
 						<executions>
 							<execution>
 								<id>generate-java</id>
+								<phase>generate-sources</phase>
+							</execution>
+							<execution>
+								<id>generate-javascript</id>
 								<phase>generate-sources</phase>
 							</execution>
 						</executions>
@@ -836,6 +865,7 @@
 			<properties>
 				<swagger.language>spring</swagger.language>
 				<swagger.config>service-config.json</swagger.config>
+				<swagger.specification.prefix>${swagger.specification.artifactId}-</swagger.specification.prefix>
 			</properties>
 			<dependencies>
 				<dependency>
@@ -847,17 +877,6 @@
 			</dependencies>
 			<build>
 				<plugins>
-					<!-- <plugin> -->
-					<!-- <groupId>io.swagger</groupId> -->
-					<!-- <artifactId>swagger-codegen-maven-plugin</artifactId> -->
-					<!-- <executions> -->
-					<!-- <execution> -->
-					<!-- <configuration> -->
-					<!-- <templateDirectory>src/main/resources-excluded/mustache</templateDirectory> -->
-					<!-- </configuration> -->
-					<!-- </execution> -->
-					<!-- </executions> -->
-					<!-- </plugin> -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
@@ -870,21 +889,16 @@
 								<id>copy-specification</id>
 								<phase>validate</phase>
 								<goals>
-									<goal>copy</goal>
+									<goal>copy-dependencies</goal>
 								</goals>
 								<configuration>
-									<artifactItems>
-										<artifactItem>
-											<groupId>${swagger.specification.groupId}</groupId>
-											<artifactId>${swagger.specification.artifactId}</artifactId>
-											<version>${swagger.specification.version}</version>
-											<type>yml</type>
-											<classifier>specification</classifier>
-											<overWrite>true</overWrite>
-											<outputDirectory>${project.build.directory}/resources-excluded/swagger</outputDirectory>
-											<destFileName>specification.yml</destFileName>
-										</artifactItem>
-									</artifactItems>
+									<includeGroupIds>${swagger.specification.groupId}</includeGroupIds>
+									<includeArtifactIds>${swagger.specification.artifactId}</includeArtifactIds>
+									<includeTypes>yml</includeTypes>
+									<includeClassifiers>specification</includeClassifiers>
+									<overWrite>true</overWrite>
+									<stripVersion>true</stripVersion>
+									<outputDirectory>${project.build.directory}/resources-excluded/swagger</outputDirectory>
 								</configuration>
 							</execution>
 						</executions>
@@ -897,36 +911,9 @@
 								<id>generate-java</id>
 								<phase>generate-sources</phase>
 							</execution>
-							<execution>
-								<id>generate-javascript</id>
-								<phase>generate-sources</phase>
-							</execution>
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-swagger-js</id>
-								<phase>process-sources</phase>
-								<goals>
-									<goal>copy-resources</goal>
-								</goals>
-								<configuration>
-									<resources>
-										<resource>
-											<directory>target/swagger-js/generated-sources</directory>
-											<targetPath>static</targetPath>
-										</resource>
-									</resources>
-									<outputDirectory>${project.build.outputDirectory}</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-clean-plugin</artifactId>
 						<executions>
 							<execution>
@@ -943,6 +930,9 @@
 											<includes>
 												<!-- edited sources -->
 												<include>**/HomeController.java</include>
+												<include>**/${swagger.exclude.1}</include>
+												<include>**/${swagger.exclude.2}</include>
+												<include>**/${swagger.exclude.3}</include>
 											</includes>
 										</fileset>
 									</filesets>
@@ -954,58 +944,11 @@
 			</build>
 		</profile>
 		<profile>
-			<id>cloud-service</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-				<file>
-					<exists>src/main/resources-excluded/manifest/manifest*.yml</exists>
-				</file>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-manifest</id>
-								<phase>package</phase>
-								<goals>
-									<goal>attach-artifact</goal>
-								</goals>
-								<configuration>
-									<artifacts>
-										<artifact>
-											<file>${project.build.directory}/resources-excluded/manifest/manifest-dev.yml</file>
-											<type>yml</type>
-											<classifier>manifest-dev</classifier>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/resources-excluded/manifest/manifest-sit.yml</file>
-											<type>yml</type>
-											<classifier>manifest-sit</classifier>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/resources-excluded/manifest/manifest-uat.yml</file>
-											<type>yml</type>
-											<classifier>manifest-uat</classifier>
-										</artifact>
-										<artifact>
-											<file>${project.build.directory}/resources-excluded/manifest/manifest-prd.yml</file>
-											<type>yml</type>
-											<classifier>manifest-prd</classifier>
-										</artifact>
-									</artifacts>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-					</plugin>
-				</plugins>
-			</build>
+			<id>release-mode</id>
+			<properties>
+				<deployFileUrl>${project.distributionManagement.repository.url}</deployFileUrl>
+				<docker.registry>${docker.registry.release}</docker.registry>
+			</properties>
 		</profile>
 		<profile>
 			<id>spring-boot</id>
@@ -1015,35 +958,8 @@
 					<exists>${basedir}/src/main/resources/bootstrap.yml</exists>
 				</file>
 			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>org.afc</groupId>
-					<artifactId>afc-scripts</artifactId>
-					<classifier>pack</classifier>
-					<type>tar.gz</type>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-scripts</id>
-								<phase>generate-resources</phase>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<artifactId>maven-resources-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>filter-scripts</id>
-								<phase>generate-resources</phase>
-							</execution>
-						</executions>
-					</plugin>
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
@@ -1128,16 +1044,16 @@
 									<goals>
 										<goal>revision</goal>
 									</goals>
+									<configuration>
+										<verbose>true</verbose>
+										<dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
+										<generateGitPropertiesFile>true</generateGitPropertiesFile>
+										<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+										<failOnNoGitDirectory>false</failOnNoGitDirectory>
+										<failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
+									</configuration>
 								</execution>
 							</executions>
-							<configuration>
-								<verbose>true</verbose>
-								<dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
-								<generateGitPropertiesFile>true</generateGitPropertiesFile>
-								<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
-								<failOnNoGitDirectory>false</failOnNoGitDirectory>
-								<failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
-							</configuration>
 						</plugin>
 						<!-- Support our own plugin -->
 						<plugin>
@@ -1188,22 +1104,17 @@
 									</goals>
 									<configuration>
 										<transformers>
-											<transformer
-												implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+											<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 												<resource>META-INF/spring.handlers</resource>
 											</transformer>
-											<transformer
-												implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
+											<transformer implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
 												<resource>META-INF/spring.factories</resource>
 											</transformer>
-											<transformer
-												implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+											<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 												<resource>META-INF/spring.schemas</resource>
 											</transformer>
-											<transformer
-												implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-											<transformer
-												implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+											<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+											<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 												<mainClass>${start-class}</mainClass>
 											</transformer>
 										</transformers>
@@ -1224,8 +1135,35 @@
 					<exists>${basedir}/src/assembly/assembly-package.xml</exists>
 				</file>
 			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.afc</groupId>
+					<artifactId>afc-scripts</artifactId>
+					<classifier>pack</classifier>
+					<type>tar.gz</type>
+				</dependency>
+			</dependencies>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-scripts</id>
+								<phase>generate-resources</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>filter-scripts</id>
+								<phase>generate-resources</phase>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-assembly-plugin</artifactId>
@@ -1252,6 +1190,42 @@
 			</build>
 		</profile>
 		<profile>
+			<id>assembly-config</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<!-- you can't use property in child to enable profile from parent -->
+				<file>
+					<exists>${basedir}/src/assembly/assembly-config.xml</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>assembly-package</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<filters>
+										<filter>src/main/filters/filter.properties</filter>
+									</filters>
+									<appendAssemblyId>true</appendAssemblyId>
+									<descriptors>
+										<descriptor>src/assembly/assembly-config.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>dockerize</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
@@ -1264,14 +1238,38 @@
 					<family>linux</family>
 				</os>
 			</activation>
-			<properties>
-			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.afc</groupId>
+					<artifactId>afc-scripts</artifactId>
+					<classifier>pack</classifier>
+					<type>tar.gz</type>
+				</dependency>
+			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-scripts</id>
+								<phase>generate-resources</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>filter-scripts</id>
+								<phase>generate-resources</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
-						<version>1.6.0</version>
 						<executions>
 							<execution>
 								<id>docker-build</id>
@@ -1294,7 +1292,8 @@
 							</execution>
 							<execution>
 								<id>docker-clean</id>
-								<phase>package</phase>
+								<!-- <phase>package</phase> -->
+								<phase>none</phase>
 								<goals>
 									<goal>exec</goal>
 								</goals>
@@ -1302,7 +1301,7 @@
 									<workingDirectory>target</workingDirectory>
 									<executable>/bin/sh</executable>
 									<arguments>
-										<argument>scripts/docker/docker-rmi.sh</argument>
+										<argument>scripts/build/docker-rmi.sh</argument>
 									</arguments>
 								</configuration>
 							</execution>
@@ -1379,6 +1378,51 @@
 									<installDirectory>.</installDirectory>
 									<arguments>dist</arguments>
 								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>auto-version</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<!-- profile will be activated when "-Pauto-version" is defined -->
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>versions-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>latest-release</id>
+								<phase>validate</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>latest-version</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<!-- profile will be activated when "-Pauto-version" is defined -->
+			</activation>
+			<properties>
+				<artifact>default</artifact>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>versions-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>latest-snapshot</id>
+								<phase>validate</phase>
 							</execution>
 						</executions>
 					</plugin>

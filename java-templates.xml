@@ -1,7 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="java-members" deleted="false" description="test method (JUnit 4) with hamcrest import" enabled="true" name="test">@${testType:newType(org.junit.Test)}
-public void ${testName}() throws Exception {
-	${staticImport:importStatic('org.hamcrest.MatcherAssert.*', 'org.hamcrest.Matchers.*', 'org.junit.Assert.fail')}${cursor}
-}
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="true" context="java-members" deleted="false" description="@After with endCurrentTest" enabled="true" name="after">	@${testType:newType(org.junit.After)}&#13;
+	public void tearDown() throws Exception {&#13;
+		${cursor}JUnit4Util.endCurrentTest(getClass(), name);${staticImport:importStatic('org.junit.Assert.fail')}${import:import('org.junit.Rule', 'org.junit.rules.TestName', 'com.contineo.util.JUnit4Util')}&#13;
+	}&#13;
+</template><template autoinsert="true" context="java-members" deleted="false" description="@AfterEach with endCurrentTest" enabled="true" name="after5">	@${testType:newType(org.junit.jupiter.api.AfterEach)}&#13;
+	public void tearDown(TestInfo testInfo) throws Exception {&#13;
+		${cursor}JUnitUtil.endCurrentTest(getClass(), testInfo);${import:import('org.junit.jupiter.api.TestInfo', 'com.contineo.util.JUnit5Util')}&#13;
+	}&#13;
 </template><template autoinsert="true" context="java-members" deleted="false" description="@Before with startCurrentTest" enabled="true" name="before">	@Rule&#13;
 	public TestName name = new TestName();&#13;
 &#13;
@@ -9,10 +13,13 @@ public void ${testName}() throws Exception {
 	@${testType:newType(org.junit.Before)}&#13;
 	public void setUp() throws Exception {&#13;
 		${cursor}JUnit4Util.startCurrentTest(getClass(), name);${staticImport:importStatic('org.junit.Assert.fail')}${import:import('org.junit.Rule', 'org.junit.rules.TestName', 'com.contineo.util.JUnit4Util')}&#13;
-	}</template><template autoinsert="true" context="java-members" deleted="false" description="@After with endCurrentTest" enabled="true" name="after">	@${testType:newType(org.junit.After)}&#13;
-	public void tearDown() throws Exception {&#13;
-		${cursor}JUnit4Util.endCurrentTest(getClass(), name);${staticImport:importStatic('org.junit.Assert.fail')}${import:import('org.junit.Rule', 'org.junit.rules.TestName', 'com.contineo.util.JUnit4Util')}&#13;
-	}&#13;
-</template><template autoinsert="true" context="java-members" deleted="false" description="create SLF4J logger" enabled="true" name="logger">&#13;
+	}</template><template autoinsert="true" context="java-members" deleted="false" description="@BeforeEach with startCurrentTest" enabled="true" name="before5">	@${testType:newType(org.junit.jupiter.api.BeforeEach)}&#13;
+	public void setUp(TestInfo testInfo) throws Exception {&#13;
+		${cursor}JUnitUtil.startCurrentTest(getClass(), testInfo);${import:import('org.junit.jupiter.api.TestInfo', 'com.contineo.util.JUnitUtil')}&#13;
+	}</template><template autoinsert="true" context="java-members" deleted="false" description="create SLF4J logger" enabled="true" name="logger">&#13;
 	private static final Logger logger = LoggerFactory.getLogger(${enclosing_type}.class);${cursor}${import:import('org.slf4j.Logger', 'org.slf4j.LoggerFactory')}&#13;
+</template><template autoinsert="false" context="java-members" deleted="false" description="test method (JUnit 4) with hamcrest import" enabled="true" name="test">@${testType:newType(org.junit.Test)}
+public void ${testName}() throws Exception {
+	${staticImport:importStatic('org.hamcrest.MatcherAssert.*', 'org.hamcrest.Matchers.*', 'org.junit.Assert.fail')}${cursor}
+}
 </template></templates>

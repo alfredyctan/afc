@@ -1,0 +1,22 @@
+alias app='cd $SYS_APP'
+alias data='cd $SYS_DATA'
+alias log='cd $SYS_LOG'
+alias sc='cd $SYS_SCRIPT'
+alias vdc='cd $SYS_VENDOR'
+alias lll='ls -ltr'
+alias ll='ls -l'
+alias h='history'
+
+# to tail last application log     
+# > tl log.     
+# or to tail last 2 application log
+# > tl log. 2
+function tl() {
+	PAT=$1
+	NUM=${2:-"1"}
+	tail -f `ls -tr *$PAT* | tail -$NUM`
+}
+
+function repeat() {
+	while [ true ]; do eval $2; sleep $1; done
+}

@@ -1,0 +1,11 @@
+/bin:/bin:ro
+/etc:/etc:ro
+/usr/bin:/usr/bin:ro
+/lib:/lib:ro
+/lib64:/lib64:ro
+/usr/lib:/usr/lib:ro
+
+/usr/lib/jvm/java-8-openjdk-amd64:/opt/sys/vendor/jdk/current:ro
+
+/opt/sys/log:/opt/sys/log:rw
+/opt/sys/data:/opt/sys/data:rw

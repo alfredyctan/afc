@@ -1,0 +1,8 @@
+type=bind,src=/bin,dst=/bin,ro=true
+type=bind,src=/etc,dst=/etc,ro=true
+type=bind,src=/usr,dst=/usr,ro=true
+type=bind,src=/usr/lib/jvm/java-8-openjdk-amd64,dst=/opt/sys/vendor/jdk/current,ro=true
+type=bind,src=/lib,dst=/lib,ro=true
+type=bind,src=/lib64,dst=/lib64,ro=true
+type=bind,src=/opt/sys/log,dst=/opt/sys/log,ro=false
+type=bind,src=/opt/sys/data,dst=/opt/sys/data,ro=false

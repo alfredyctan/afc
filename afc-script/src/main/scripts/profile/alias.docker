@@ -1,0 +1,88 @@
+#docker image ls : dil
+function dil() {
+    docker image ls -a
+}
+
+#docker container ls : dcl
+function dcl() {
+    docker container ls -a
+}
+
+#docker service ls : dsl
+function dsl() {
+    docker service ls
+}
+
+#docker host journal : djl
+function djl() {
+    sudo journalctl -fu docker.service
+}
+
+#docker image id : iid
+function iid() {
+	dil --format "{{.ID}} {{.Repository}} {{.Tag}}" | grep -e $1 | cut -d " " -f 1
+}
+
+#docker container id : cid
+function cid() {
+	dcl --format "{{.ID}} {{.Status}} {{.Image}} {{.Names}}" | grep -e $1 | cut -d " " -f 1
+}
+
+#docker service id : sid
+function sid() {
+	dsl --format "{{.ID}} {{.Image}} {{.Name}}" | grep -e $1 | cut -d " " -f 1
+}
+
+#docker service name : sname
+function sname() {
+	docker service ls --format "{{.ID}} {{.Name}} {{.Mode}} {{.Replicas}} {{.Image}} {{.Ports}}" | grep -e $1 | cut -d ' ' -f 2
+}
+
+#docker image remove : drmi
+function drmi() {
+	docker image rm $(iid $1)
+}
+
+#docker container remove : dcr
+function dcr() {
+	docker container rm $(cid $1)
+}
+
+#docker container stop : dcs
+function dcs() {
+	docker container stop $(cid $1)
+}
+
+#docker service remove : dsr
+function dsr() {
+	docker service rm $(sid $1)
+}
+
+#docker execute shell : des
+function des() {
+	docker exec -i -t $(cid $1) /bin/bash
+}
+
+#docker execute command : de
+function de() {
+	PATTERN=$1; shift 1;
+	docker exec -i -t $(cid $PATTERN) $*
+}
+
+#docker remove dangling image : drdi
+function drdi() {
+	docker image rm $(docker images -f dangling=true -q)
+}
+
+#docker alias help : dah
+function dah() {
+    grep '#' ${BASH_SOURCE[0]} | grep -v grep | sort -n
+}
+
+#docker service scale : dss
+function dss() {
+    for SID in `sname $1`
+    do
+        docker service scale $SID=$2
+    done
+}

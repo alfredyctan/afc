@@ -1,0 +1,2 @@
+type=bind,src=/opt/sys/log,dst=/opt/sys/log,ro=false
+type=bind,src=/opt/sys/data,dst=/opt/sys/data,ro=false

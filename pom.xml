@@ -9,10 +9,8 @@
 		<module>afc-parent</module>
 		<module>afc-script</module>
 		<module>afc-util</module>
-		<module>afc-swagger-api</module>
-		<module>afc-swagger-mustache</module>
-		<module>afc-swagger-service</module>
-		<module>afc-swagger-codegen-cli</module>
+		<module>afc-swagger2-api</module>
+		<module>afc-swagger2-service</module>
 	</modules>
 	<scm>
 		<url>https://github.com/alfredyctan/afc</url>

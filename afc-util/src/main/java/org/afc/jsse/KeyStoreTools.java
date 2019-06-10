@@ -12,7 +12,6 @@ import java.util.Enumeration;
 
 import org.afc.util.StringUtil;
 
-
 public class KeyStoreTools {
 
 	private static final int OPER = 0;

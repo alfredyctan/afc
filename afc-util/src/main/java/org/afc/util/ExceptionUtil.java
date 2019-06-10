@@ -1,6 +1,7 @@
 package org.afc.util;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ExceptionUtil {
 
@@ -27,4 +28,12 @@ public class ExceptionUtil {
 		return (T)target;
 	}
 
+	public static <R> R tryTo(Supplier<R> attempt, Supplier<R> caught) {
+		try {
+			return attempt.get();
+		} catch (Exception e) {
+			return caught.get();
+		}
+	}
+	
 }

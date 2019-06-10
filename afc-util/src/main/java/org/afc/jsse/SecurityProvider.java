@@ -13,16 +13,16 @@ public class SecurityProvider extends Provider {
 	private static final long serialVersionUID = -923206889973876245L;
 	
 	public SecurityProvider() {
-		super("AFC", 1.0D, "AFC Security Provider 1.0");
+		super("System", 1.0D, "System Security Provider 1.0");
 
-		put("KeyManagerFactory.AFC", DelegatedKeyManagerFactorySpi.class.getName());
-		logger.info("Security Provider : KeyManagerFactory.AFC added with {}", DelegatedKeyManagerFactorySpi.class.getName());
+		put("KeyManagerFactory.System", DelegatedKeyManagerFactorySpi.class.getName());
+		logger.info("Security Provider : KeyManagerFactory.System added with {}", DelegatedKeyManagerFactorySpi.class.getName());
 
 		Security.insertProviderAt(this, 0);
 		logger.info("Security : {} added to head", SecurityProvider.class.getName());
 
-		Security.setProperty("ssl.KeyManagerFactory.algorithm", "AFC");
-		logger.info("Security : ssl.KeyManagerFactory.algorithm set to AFC");
+		Security.setProperty("ssl.KeyManagerFactory.algorithm", "System");
+		logger.info("Security : ssl.KeyManagerFactory.algorithm set to System");
 
 	}
 }

@@ -32,9 +32,22 @@
 					</snapshots>
 				</repository>
 				<repository>
-					<id>afc-release</id>
-					<name>afc-release</name>
-					<url>http://localhost:8081/repository/afc-release</url>
+					<id>jitpack.io</id>
+					<url>https://jitpack.io</url>
+					<releases>
+						<updatePolicy>never</updatePolicy>
+					</releases>
+				</repository>
+				<repository>
+					<id>jboss.org</id>
+					<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+					<releases>
+						<updatePolicy>never</updatePolicy>
+					</releases>
+				</repository>
+				<repository>
+					<id>release</id>
+					<url>http://localhost:8081/repository/release</url>
 					<releases>
 						<updatePolicy>never</updatePolicy>
 					</releases>
@@ -43,9 +56,8 @@
 					</snapshots>
 				</repository>
 				<repository>
-					<id>afc-snapshot</id>
-					<name>afc-snapshot</name>
-					<url>http://localhost:8081/repository/afc-snapshot</url>
+					<id>snapshot</id>
+					<url>http://localhost:8081/repository/snapshot</url>
 					<releases>
 						<enabled>false</enabled>
 					</releases>
@@ -69,7 +81,7 @@
 				<pluginRepository>
 					<id>plugins-release</id>
 					<name>plugins-release</name>
-					<url>http://localhost:8081/repository/afc-release</url>
+					<url>http://localhost:8081/repository/release</url>
 					<releases>
 						<updatePolicy>never</updatePolicy>
 					</releases>
@@ -80,7 +92,7 @@
 				<pluginRepository>
 					<id>plugins-snapshots</id>
 					<name>plugins-snapshot</name>
-					<url>http://localhost:8081/repository/afc-release</url>
+					<url>http://localhost:8081/repository/snapshot</url>
 					<releases>
 						<enabled>false</enabled>
 					</releases>

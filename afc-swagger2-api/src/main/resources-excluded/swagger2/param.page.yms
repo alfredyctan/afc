@@ -1,0 +1,20 @@
+# param.page.yms #
+  Page:
+    in: query
+    name: page
+    description: the requesting page number, start from 0
+    type: integer
+    minimum: 0
+  Size:
+    in: query
+    name: size
+    description: the requesting page size, minimum size 1
+    type: integer
+    minimum: 1
+  Sort:
+    in: query
+    name: sort
+    type: array
+    collectionFormat: multi
+    items:
+      type: string

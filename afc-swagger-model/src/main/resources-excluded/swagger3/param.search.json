@@ -1,0 +1,70 @@
+{
+	"IdString": {
+		"in": "query",
+		"name": "id",
+		"description": "id in string format",
+		"schema": {
+			"type": "string",
+			"format": "string"
+		}
+	},
+	"IdNumber": {
+		"in": "query",
+		"name": "id",
+		"description": "id in integer format",
+		"schema": {
+			"type": "integer",
+			"format": "int64"
+		}
+	},
+	"Status": {
+		"in": "query",
+		"name": "status",
+		"description": "search by record status",
+		"schema": {
+			"type": "string"
+		}
+	},
+	"Statuses": {
+		"in": "query",
+		"name": "statuses",
+		"description": "search by record statuses",
+		"schema": {
+			"type": "array",
+			"collectionFormat": "multi",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"DateFrom": {
+		"in": "query",
+		"name": "from",
+		"description": "search by record date since",
+		"schema": {
+			"type": "string",
+			"format": "date"
+		}
+	},
+	"DateTo": {
+		"in": "query",
+		"name": "to",
+		"description": "search by record date till",
+		"schema": {
+			"type": "string",
+			"format": "date"
+		}
+	},
+	"Underlyings": {
+		"in": "query",
+		"name": "underlyings",
+		"description": "search by underlying assets",
+		"schema": {
+			"type": "array",
+			"collectionFormat": "multi",
+			"items": {
+				"type": "string"
+			}
+		}
+	}
+}

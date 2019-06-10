@@ -1,0 +1,29 @@
+{
+	"ResponseContext": {
+		"type": "object",
+		"description": "The context of the response to provide additional information of the main responsed content",
+		"properties": {
+			"code": {
+				"type": "string",
+				"description": "response code, underlying application can supplement additional code for client action mapping"
+			},
+			"title": {
+				"type": "string",
+				"description": "the title of this response, can be used as display title"
+			},
+			"message": {
+				"type": "string",
+				"description": "free text content provided for direct display. eg. UI msgbox"
+			},
+			"context": {
+				"type": "string",
+				"description": "free text content to provide further detail for client processing. eg. render display in UI, not for direct display"
+			},
+			"timestamp": {
+				"type": "string",
+				"format": "date-time",
+				"description": "timestamp of the response generated"
+			}
+		}
+	}
+}

@@ -1,0 +1,26 @@
+# def.paged.yms #
+  Paged:
+    type: object
+    properties:
+      numberOfElements:
+        description: number of elements in this page  
+        type: integer
+      number:
+        description: current page number  
+        type: integer
+      size:
+        description: size of each page  
+        type: integer
+      first:
+        description: first page indicator  
+        type: boolean
+      last:
+        description: last page indicator  
+        type: boolean
+      totalPages:
+        description: total number of pages  
+        type: integer
+      totalElements:
+        description: total number of elements  
+        type: integer
+        format: int64

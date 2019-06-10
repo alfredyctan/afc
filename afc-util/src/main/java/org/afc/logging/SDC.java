@@ -2,29 +2,30 @@ package org.afc.logging;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.afc.util.StringUtil;
 import org.slf4j.MDC;
+
+import org.afc.util.StringUtil;
 
 
 /**
- * Single Diagnostic Context, which is an Util class to simplify the 
+ * Single Diagnostic Context, which is an Util class to simplify the
  * usage of MDC (Multi Diagnostic Contexts) with a pre-defined context "CTX"
  * in Multi-Threaded environment.
- * 
+ *
  * <param name="ConversionPattern"
  * value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p][%t|%c{1}][%X{SDC}] : %m%n" />
- * 
+ *
  * @author atyc
- * 
+ *
  */
 public class SDC {
 
 	private static final AtomicInteger atomicSeed = new AtomicInteger();
-	
+
 	private static final char DEL = '.';
 
-	private static final String SDC = "SDC";
-	
+	public static final String SDC = "SDC";
+
 	private SDC() {}
 
 	public static String set(String message) {
@@ -55,7 +56,7 @@ public class SDC {
 	public static String set(Object object) {
 		return set(hash(object));
 	}
-	
+
 	public static String peek() {
 		return MDC.get(SDC);
 	}
@@ -89,18 +90,39 @@ public class SDC {
 	public static String push(Object object) {
 		return push(hash(object));
 	}
-	
+
 	public static String push(String s) {
-		String context = MDC.get(SDC) + DEL + s;
+		return push(s, DEL);
+	}
+
+	public static String push(String s, char del) {
+		String context = MDC.get(SDC) + del + s;
 		MDC.put(SDC, context);
 		return context;
 	}
 
 	public static String pop() {
+		return pop(DEL);
+	}
+
+	public static String pop(char del) {
 		String context = MDC.get(SDC);
-		int i = context.lastIndexOf('.');
-		MDC.put(SDC, context.substring(0, i));
-		return context.substring(i + 1);
+		int i = context.lastIndexOf(del);
+		if (i > 0) {
+			MDC.put(SDC, context.substring(0, i));
+			return context.substring(i + 1);
+		} else {
+			return "";
+		}
+	}
+
+	public static String auto() {
+		return auto(new Object());
+	}
+
+	public static String auto(Object object) {
+		String sdc = peek();
+		return sdc != null ? sdc : set(object);
 	}
 
 	public static String hash(Object obj) {

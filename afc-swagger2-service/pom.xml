@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>afc-swagger-service</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<parent>
 		<groupId>org.afc</groupId>
 		<artifactId>afc-parent</artifactId>
@@ -16,7 +16,12 @@
 		<tag>HEAD</tag>
 	</scm>
 	<dependencies>
-		<!-- Spring Boot  -->
+		<dependency>
+			<groupId>org.afc</groupId>
+			<artifactId>afc-swagger-model</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<!-- Spring Boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -73,4 +78,15 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.afc</groupId>
+				<artifactId>afc-swagger-model</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+				<classifier>resources</classifier>
+				<type>tar.gz</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

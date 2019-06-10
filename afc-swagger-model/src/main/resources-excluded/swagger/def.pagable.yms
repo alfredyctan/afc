@@ -1,0 +1,24 @@
+# def.pagable.yms #
+  Sort:
+    type: object
+    properties:
+      sorted:
+        type: boolean
+      unsorted:
+        type: boolean
+  Pageable:
+    type: object
+    properties:
+      sort:
+        $ref: "#/definitions/Sort"
+      pageSize:
+        type: integer
+      pageNumber:
+        type: integer
+      offset:
+        type: integer
+        format: int64
+      paged:
+        type: boolean
+      unpaged:
+        type: boolean

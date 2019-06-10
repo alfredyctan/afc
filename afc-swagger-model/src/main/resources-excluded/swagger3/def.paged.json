@@ -1,0 +1,36 @@
+{
+	"Paged": {
+		"type": "object",
+		"properties": {
+			"numberOfElements": {
+				"type": "integer",
+				"description": "number of elements in this page"
+			},
+			"number": {
+				"type": "integer",
+				"description": "current page number"
+			},
+			"size": {
+				"type": "integer",
+				"description": "size of each page"
+			},
+			"first": {
+				"type": "boolean",
+				"description": "first page indicator"
+			},
+			"last": {
+				"type": "boolean",
+				"description": "last page indicator"
+			},
+			"totalPages": {
+				"type": "integer",
+				"description": "total number of pages"
+			},
+			"totalElements": {
+				"type": "integer",
+				"format": "int64",
+				"description": "total number of elements"
+			}
+		}
+	}
+}

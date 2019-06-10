@@ -14,13 +14,21 @@ build_param() {
 		if [ ! -r "$BASEDIR/$FILE" ]; then
 			continue;
 		fi
-		
+
 		dos2unix -q $BASEDIR/$FILE
 		for CFG in `cat $BASEDIR/$FILE`
 		do
 			echo "CFG [$CFG]"
-			if [ -r "$EXCLUDE" ]; then
-				if [ -n "`grep $CFG $EXCLUDE`" ]; then
+			if [ -r "$BASEDIR/$EXCLUDE" ] && [ -f "$BASEDIR/$EXCLUDE" ]; then
+				dos2unix -q $BASEDIR/$EXCLUDE
+				while read EXCLUDE_PATTERN
+				do
+					EXCLUDED=`echo $CFG | grep -e $EXCLUDE_PATTERN`
+					if [ -n "$EXCLUDED" ]; then
+						break;
+					fi
+				done < $BASEDIR/$EXCLUDE
+				if [ -n "$EXCLUDED" ]; then
 					echo "CFG [$CFG] is excluded from $EXCLUDE"
 					continue;
 				fi
@@ -50,13 +58,20 @@ build_option() {
 		if [ ! -r "$BASEDIR/$FILE" ]; then
 			continue;
 		fi
-		dos2unix -q $BASEDIR/$FILE
 
+		dos2unix -q $BASEDIR/$FILE
 		[[ $(tail -c1 $BASEDIR/$FILE) && -f $BASEDIR/$FILE ]] && echo '' >> $BASEDIR/$FILE
 		while read -r OPTION; do
 			echo "OPTION [$OPTION]"
-			if [ -r "$EXCLUDE" ]; then
-				EXCLUDED=`grep -e "$OPTION" $EXCLUDE`
+			if [ -r "$BASEDIR/$EXCLUDE" ] && [ -f "$BASEDIR/$EXCLUDE" ]; then
+				dos2unix -q $BASEDIR/$EXCLUDE
+				while read EXCLUDE_PATTERN
+				do
+					EXCLUDED=`echo $OPTION | grep -e $EXCLUDE_PATTERN`
+					if [ -n "$EXCLUDED" ]; then
+						break;
+					fi
+				done < $BASEDIR/$EXCLUDE
 				if [ -n "$EXCLUDED" ]; then
 					echo "OPTION [$OPTION] is excluded from $EXCLUDE"
 					continue;

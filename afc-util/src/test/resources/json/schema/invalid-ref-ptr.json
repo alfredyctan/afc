@@ -1,0 +1,10 @@
+{
+  "Initial": {
+    "type": "object",
+    "properties": {
+      "payoff": {
+        "$ref": "payoff.json#/PayoffNotExist"
+      }
+    }
+  }
+}

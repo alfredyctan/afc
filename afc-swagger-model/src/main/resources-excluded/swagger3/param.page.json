@@ -1,0 +1,34 @@
+{
+	"Page": {
+		"in": "query",
+		"name": "page",
+		"description": "the requesting page number, start from 0",
+		"schema": {
+			"type": "integer",
+			"format": "string",
+			"minimum": 0
+		}
+	},
+	"Size": {
+		"in": "query",
+		"name": "size",
+		"description": "the requesting page size, minimum size 1",
+		"schema": {
+			"type": "integer",
+			"format": "string",
+			"minimum": 1
+		}
+	},
+	"Sort": {
+		"in": "query",
+		"name": "sort",
+		"description": "the sorting argument",
+		"schema": {
+			"type": "array",
+			"collectionFormat": "multi",
+			"items": {
+				"type": "string"
+			}
+		}
+	}
+}

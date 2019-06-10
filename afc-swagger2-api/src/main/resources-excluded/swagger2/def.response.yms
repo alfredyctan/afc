@@ -1,0 +1,18 @@
+# def.response.yms #
+  ResponseContext:
+    type: object
+    properties:
+      code:
+        type: string
+      title:
+        type: string
+      details:
+        type: string
+      status:
+        type: integer
+        format: int32
+      timestamp:
+        type: integer
+        format: int64
+      developerMessage:
+        type: string

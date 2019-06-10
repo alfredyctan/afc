@@ -1,0 +1,7 @@
+spring.main.banner-mode: log
+spring.output.ansi.enabled: DETECT
+
+test.datasource:
+  url: jdbc:hsqldb:mem:mem_test_db;sql.syntax_pgs=true;
+  username: sa
+  password: 

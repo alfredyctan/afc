@@ -1,49 +1,95 @@
 package org.afc.util;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.TimeZone;
 
-import org.afc.clock.Clock;
-import org.afc.clock.SystemClock;
-
-/**
- * 
- * DateUtil library to provide static date function for regression testing
- * 
- * You will need bean definition in the spring context file
- * for System Clock
- * <pre>
- * <bean id="DateUtil" class="org.afc.util.SystemClock" />
- * </pre> 
- *
- * for static clock
- * <pre>
- * <bean id="DateUtil" class="org.afc.util.StaticClock">
- *    <property name="staticDate" value="2010-03-16 11:14:52.347"/>
- *    <property name="freezeTime" value="true"/>
- * </bean> 
- * </pre>
- */
 public class ClockUtil {
 
-	private static Clock instance;
-
+	private static Clock clock;
 	static {
-		instance = new SystemClock();
+		clock = Clock.systemUTC();
+	}
+	
+	public static void setClock(Clock clock) {
+		ClockUtil.clock = clock;
 	}
 
-	public static Clock getInstance() {
-		return instance;
+	public static Clock clock() {
+		return ClockUtil.clock;
+	}
+	
+	public static Instant instant() { 
+		return clock.instant();
 	}
 
-	public static void setInstance(Clock instance) {
-		ClockUtil.instance = instance;
+	public static Date date() {
+		return new Date(clock.millis());
 	}
-
-	public static Date currentDate() {
-		return instance.getCurrentDate();
-	}
-
+	
 	public static long currentTimeMillis() {
-		return instance.getCurrentTimeMillis();
+		return clock.millis();
+	}
+
+	public static LocalDate localDate() {
+		return LocalDate.now(clock);
+	}
+
+	public static LocalDateTime localDateTime() {
+		return LocalDateTime.now(clock);
+	}
+	
+	public static LocalTime localTime() {
+		return LocalTime.now(clock);
+	}
+
+	public static ZonedDateTime zonedDateTime() {
+		return ZonedDateTime.now(clock);
+	}
+	
+	public static ZonedDateTime zonedDateTime(ZoneId zoneId) {
+		return ZonedDateTime.now(clock).withZoneSameInstant(zoneId);
+	}
+
+	public static OffsetDateTime offsetDateTime() {
+		return OffsetDateTime.now(clock);
+	}
+	
+	public static OffsetDateTime offsetDateTime(ZoneOffset zoneOffset) {
+		return OffsetDateTime.now(clock).withOffsetSameInstant(zoneOffset);
+	}
+	
+	public static ZoneId defaultZoneId() {
+		return ZoneId.systemDefault();
+	}
+
+	public static ZoneId utcZoneId() {
+		return ZoneId.of("UTC");
+	}
+
+	public static void utcTimeZone() {
+		timeZone(utcZoneId());
+	}
+
+	public static void timeZone(ZoneId id) {
+		TimeZone.setDefault(TimeZone.getTimeZone(id));
+	}
+	
+	/**
+	 * Fix the clock returned
+	 *  
+	 * time : time string parse
+	 * eg. "2007-12-03T10:15:30.00Z"
+	 */
+	public static void fixedClock(String time) {
+		ClockUtil.clock = Clock.fixed(Instant.parse(time), ZoneOffset.UTC);
 	}
 }

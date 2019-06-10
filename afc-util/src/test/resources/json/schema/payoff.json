@@ -1,0 +1,37 @@
+{
+  "Payoff": {
+    "type": "object",
+	"required": [
+		"acquirer", "product", "issueDate", "issuerPrice"
+	],
+    "properties": {
+      "acquirer": {
+        "type": "string",
+        "description": "The buyside organziation of this payoff.",
+        "minLength": 1,
+        "maxLength": 5
+      },
+      "product": {
+        "type": "string",
+        "description": "The product type of this payoff, eg. FCN, ELN, ACCU, DECU... etc.",
+        "enum": [
+          "CALL",
+          "PUT",
+          "FCN"
+        ]
+      },
+      "issueDate": {
+        "type": "string",
+        "format": "date",
+        "description": "The issue date in YYYY-MM-DD format."
+      },
+      "issuerPrice": {
+        "type": "number",
+        "format": "double",
+        "minimum": 0,
+        "description": "The asked issue price percentage in fraction form, eg. 0.95 is 95%."
+      }
+    }
+  }
+}
+

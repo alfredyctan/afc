@@ -1,16 +1,23 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.afc</groupId>
-	<artifactId>afc-aggregator</artifactId>
+	<artifactId>aggregator-common</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<parent>
+		<groupId>org.afc</groupId>
+		<artifactId>afc-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
 	<modules>
-		<module>afc-parent</module>
-		<module>afc-script</module>
 		<module>afc-util</module>
+		<module>afc-swagger-model</module>
+		<module>afc-swagger3-api</module>
+		<module>afc-swagger3-service</module>
 		<module>afc-swagger2-api</module>
 		<module>afc-swagger2-service</module>
+		<module>afc-script</module>
+		<module>afc-liquibase</module>
+		<module>afc-cassalog</module>
 	</modules>
 	<scm>
 		<url>https://github.com/alfredyctan/afc</url>
@@ -22,26 +29,11 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<inherited>false</inherited>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<inherited>false</inherited>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
 				<inherited>false</inherited>
 				<configuration>
-					<tagNameFormat>release-@{project.version}</tagNameFormat>
+					<tagNameFormat>afc-common-@{project.version}</tagNameFormat>
 				</configuration>
 			</plugin>
 		</plugins>

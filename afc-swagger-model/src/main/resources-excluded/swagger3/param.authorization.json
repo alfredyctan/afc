@@ -1,0 +1,13 @@
+{
+	"Authorization": {
+		"in": "header",
+		"name": "authorization",
+		"description": "JWT authorization token. eg. Bearer XXXXXXX",
+		"required": true,
+		"schema": {
+			"type": "string",
+			"format": "string",
+			"default": "Bearer "
+		}
+	}
+}

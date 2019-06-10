@@ -48,7 +48,12 @@ public class DelegatedKeyManagerFactorySpi extends KeyManagerFactorySpi {
 
 	@Override
 	protected void engineInit(KeyStore ks, char[] password) throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
-		delegate.init(ks, password);
+		try {
+			delegate.init(ks, password);
+		} catch (Exception e) {
+			logger.error("error on initialize keystore, {}", e.getMessage());
+			logger.debug("details :", e);
+		}
 		for (Enumeration<String> aliases = ks.aliases(); aliases.hasMoreElements();) {
 			String alias = aliases.nextElement();
 			try {

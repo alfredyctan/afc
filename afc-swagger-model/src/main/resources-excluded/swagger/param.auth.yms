@@ -1,0 +1,8 @@
+# param.auth.yms #
+  Authorization:
+    in: header
+    name: authorization
+    required: true
+    type: string
+    format: string
+    default: "Bearer "

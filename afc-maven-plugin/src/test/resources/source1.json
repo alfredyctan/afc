@@ -1,0 +1,82 @@
+{
+  "openapi": "3.1",
+  "info": {
+    "title": "overwrited",
+    "version": "1.0.1-SNAPSHOT",
+    "remark1": "new"
+  },
+  "tags": [
+    {
+      "name": "tag1a",
+      "description": "desc1a"
+    },
+    {
+      "name": "tag1a",
+      "description": "desc1a"
+    }
+  ],
+  "paths": {
+    "/submit": {
+      "post": {
+        "tags": [
+          "p1"
+        ],
+        "summary": "s1",
+        "operationId": "o1",
+        "parameters": [
+          {
+            "$ref": "r1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "d1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "r1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/amend": {
+      "post": {
+        "tags": [
+          "p1"
+        ],
+        "summary": "s1",
+        "operationId": "o1",
+        "parameters": [
+          {
+            "$ref": "r1"
+          }
+        ],
+        "requestBody": {
+          "description": "d1",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "r1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "d1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "r1"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

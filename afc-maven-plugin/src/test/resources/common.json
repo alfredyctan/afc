@@ -1,0 +1,7 @@
+{
+  "openapi": "3.0",
+  "info": {
+    "title": "common",
+    "version": "1.0.0-SNAPSHOT"
+  }
+}

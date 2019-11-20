@@ -1,0 +1,140 @@
+{
+  "openapi": "3.0",
+  "info": {
+    "title": "common",
+    "version": "1.0.0-SNAPSHOT",
+    "remark1": "new",
+    "remark2": "exist"
+  },
+  "tags": [
+    {
+      "name": "tag1a",
+      "description": "desc1a"
+    },
+    {
+      "name": "tag1a",
+      "description": "desc1a"
+    },
+    {
+      "name": "tag2a",
+      "description": "desc2a"
+    },
+    {
+      "name": "tag2a",
+      "description": "desc2a"
+    }
+  ],
+  "paths": {
+    "/submit": {
+      "post": {
+        "tags": [
+          "p1",
+          "p2"
+        ],
+        "summary": "s2",
+        "operationId": "s2",
+        "parameters": [
+          {
+            "$ref": "r1"
+          },
+          {
+            "$ref": "r2"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "d2",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "r2"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "description": "d2",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "r2"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/amend": {
+      "post": {
+        "tags": [
+          "p1"
+        ],
+        "summary": "s1",
+        "operationId": "o1",
+        "parameters": [
+          {
+            "$ref": "r1"
+          }
+        ],
+        "requestBody": {
+          "description": "d1",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "r1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "d1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "r1"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": [
+          "p2"
+        ],
+        "summary": "s2",
+        "operationId": "o2",
+        "parameters": [
+          {
+            "$ref": "r2"
+          },
+          {
+            "in": "query",
+            "name": "n2",
+            "description": "d2",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "d2",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "r2"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

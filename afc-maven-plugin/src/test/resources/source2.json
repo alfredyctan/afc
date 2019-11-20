@@ -1,0 +1,91 @@
+{
+  "openapi": "3.0",
+  "info": {
+    "title": "being overwrite",
+    "version": "1.0.0-SNAPSHOT",
+    "remark2": "exist"
+  },
+  "tags": [
+    {
+      "name": "tag2a",
+      "description": "desc2a"
+    },
+    {
+      "name": "tag2a",
+      "description": "desc2a"
+    }
+  ],
+  "paths": {
+    "/submit": {
+      "post": {
+        "tags": [
+          "p2"
+        ],
+        "summary": "s2",
+        "operationId": "s2",
+        "parameters": [
+          {
+            "$ref": "r2"
+          }
+        ],
+        "requestBody": {
+          "description": "d2",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "r2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "d2",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "r2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": [
+          "p2"
+        ],
+        "summary": "s2",
+        "operationId": "o2",
+        "parameters": [
+          {
+            "$ref": "r2"
+          },
+          {
+            "in": "query",
+            "name": "n2",
+            "description": "d2",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "d2",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "r2"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

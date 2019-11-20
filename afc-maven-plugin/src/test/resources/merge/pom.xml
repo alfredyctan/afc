@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.afc</groupId>
+	<artifactId>test-merge</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.afc</groupId>
+				<artifactId>afc-maven-plugin</artifactId>
+<!-- 				<version>1.0.0-SNAPSHOT</version> -->
+				<configuration>
+					<output>target/test-merge.json</output>
+					<overwrite>true</overwrite>
+					<sources>
+						<source>src/test/resources/source1.json</source>
+						<source>src/test/resources/source2.json</source>
+						<source>src/test/resources/source2.json</source>
+					</sources>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>json-merge</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

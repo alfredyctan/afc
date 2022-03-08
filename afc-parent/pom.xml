@@ -41,7 +41,7 @@
 		<artifact.springfox.version>2.5.0</artifact.springfox.version>
 		<artifact.swagger.version>1.5.12</artifact.swagger.version>
 		<artifact.swagger3.version>2.1.3</artifact.swagger3.version>
-		<artifact.xstream.version>1.4.11.1</artifact.xstream.version>
+		<artifact.xstream.version>1.4.19</artifact.xstream.version>
 
 		<swagger.serializable-model>false</swagger.serializable-model>
 		<swagger.dateLibrary>java8</swagger.dateLibrary>

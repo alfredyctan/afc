@@ -21,7 +21,7 @@
 		<artifact.gson.version>2.8.1</artifact.gson.version>
 		<artifact.gson-fire.version>1.8.3</artifact.gson-fire.version>
 		<artifact.guava.version>30.1-jre</artifact.guava.version>
-		<artifact.hazelcast.version>3.12.12</artifact.hazelcast.version>
+		<artifact.hazelcast.version>5.1</artifact.hazelcast.version>
 		<artifact.istack.version>3.0.8</artifact.istack.version>
 		<artifact.javassist.version>3.22.0-GA</artifact.javassist.version>
 		<artifact.javax-activation.version>1.1.1</artifact.javax-activation.version>

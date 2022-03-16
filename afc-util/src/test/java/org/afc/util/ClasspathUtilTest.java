@@ -43,7 +43,7 @@ public class ClasspathUtilTest {
 			Class.forName("org.dom4j.rule.RuleSet"),
 			Class.forName("org.dom4j.rule.Stylesheet")
 		));
-		
+
 		assertThat("in jar", actual, containsInAnyOrder(expect.toArray()));
 	}
 
@@ -62,7 +62,7 @@ public class ClasspathUtilTest {
 			Class.forName("org.dom4j.rule.RuleSet"),
 			Class.forName("org.dom4j.rule.Stylesheet")
 		));
-		
+
 		assertThat("in jar", actual, containsInAnyOrder(expect.toArray()));
 	}
 
@@ -81,7 +81,7 @@ public class ClasspathUtilTest {
 			Class.forName("org.dom4j.rule.RuleSet"),
 			Class.forName("org.dom4j.rule.Stylesheet")
 		));
-		
+
 		assertThat("in jar", actual, containsInAnyOrder(expect.toArray()));
 
 	}
@@ -99,11 +99,11 @@ public class ClasspathUtilTest {
 			Class.forName("org.dom4j.rule.RuleSet"),
 			Class.forName("org.dom4j.rule.Stylesheet")
 		));
-		
+
 		assertThat("in jar", actual, containsInAnyOrder(expect.toArray()));
 	}
 
-	
+
 	@Test
 	public void testInDir() throws ClassNotFoundException {
 		List<Class<?>> actual = JUnit4Util.actual(ClasspathUtil.findClasses("org.afc.util.test", true, true));
@@ -113,7 +113,7 @@ public class ClasspathUtilTest {
 		    Class.forName("org.afc.util.test.sub.Sub$Inner"),
 		    Class.forName("org.afc.util.test.sub.Sub")
 		));
-			
+
 		assertThat("in jar", actual, containsInAnyOrder(expect.toArray()));
 	}
 
@@ -124,7 +124,7 @@ public class ClasspathUtilTest {
 		    Class.forName("org.afc.util.test.Base$Inner"),
 		    Class.forName("org.afc.util.test.Base")
 		));
-			
+
 		assertThat("in jar", actual, containsInAnyOrder(expect.toArray()));
 	}
 
@@ -135,7 +135,7 @@ public class ClasspathUtilTest {
 		    Class.forName("org.afc.util.test.Base"),
 		    Class.forName("org.afc.util.test.sub.Sub")
 		));
-			
+
 		assertThat("in jar", actual, containsInAnyOrder(expect.toArray()));
 	}
 
@@ -145,7 +145,7 @@ public class ClasspathUtilTest {
 		List<Class<?>> expect = JUnit4Util.expect(Arrays.asList(
 		    Class.forName("org.afc.util.test.Base")
 		));
-			
+
 		assertThat("in jar", actual, containsInAnyOrder(expect.toArray()));
 	}
 }

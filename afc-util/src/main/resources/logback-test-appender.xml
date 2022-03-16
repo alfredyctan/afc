@@ -2,23 +2,20 @@
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 	<conversionRule conversionWord="tid" converterClass="org.afc.logging.ThreadIdConverter" />
 
-	<!-- if you want to suppress some full stack trace -->
-	<!-- <property name="EXPT_SUPPRESS" value="logger.contains(&quot;RedirectingEurekaHttpClient&quot;) || logger.contains(&quot;DiscoveryClient&quot;)" /> -->
-
-	<!-- if you want to show only the exception message not the stack trace -->
-	<!-- make sure it is also include in the EXPT_SUPPRESS -->
-	<!-- <property name="EXPT_MSG_ONLY" value="logger.contains(&quot;RedirectingEurekaHttpClient&quot;) || logger.contains(&quot;DiscoveryClient&quot;)" /> -->
-
-	<evaluator name="EXPT">
-		<expression>${EXPT_SUPPRESS:-false}</expression>
-	</evaluator>
-	<evaluator name="EXPT_MSG">
-		<expression>!${EXPT_MSG_ONLY:-false}</expression>
-	</evaluator>
+	<appender name="MAIN-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>${FILE_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS Z}} [${LOG_LEVEL_PATTERN:-%5p}][%8X{SDC}][%5.5tid][%-40.40logger{39}] : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>target/log/${sys.service}.${sys.cluster}.${sys.instance}.%d{yyyy-MM-dd}.log.%i</fileNamePattern>
+			<maxFileSize>500MB</maxFileSize>
+			<maxHistory>14</maxHistory>
+		</rollingPolicy>
+	</appender>
 	
 	<appender name="MAIN" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>${CONSOLE_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} [%clr(${LOG_LEVEL_PATTERN:-%5p})][%clr(%5X{SDC}){magenta}]%clr([%5.5tid]){faint}%clr([%-40.40logger{39}]){cyan} %clr(:){faint} %m%n%xEx{full,EXPT}%xEx{0,EXPT_MSG}}</pattern>
+			<pattern>${CONSOLE_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS Z}}){faint} [%clr(${LOG_LEVEL_PATTERN:-%5p})][%clr(%8X{SDC}){magenta}]%clr([%5.5tid]){faint}%clr([%-40.40logger{39}]){cyan} %clr(:){faint} %m%n%xEx{full,EXPT}%xEx{0,EXPT_MSG}}</pattern>
 		</encoder>
 	</appender>
 </included>

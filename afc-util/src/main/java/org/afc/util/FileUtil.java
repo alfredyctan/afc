@@ -1,6 +1,8 @@
 package org.afc.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,9 +11,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import org.afc.AFCException;
 
@@ -21,7 +30,39 @@ public class FileUtil {
 
 	private static final String CLASSPATH_PROTOCOL = "classpath://";
 
-	private static final Pattern TO_NATIVE_PATH = Pattern.compile("[\\\\|/]"); 
+	private static final Pattern TO_NATIVE_PATH = Pattern.compile("[\\\\|/]");
+
+	public static final Comparator<File> BY_CREATION_TIME = (l, r) -> {
+		try {
+			BasicFileAttributes lAttr = Files.readAttributes(l.toPath(), BasicFileAttributes.class);
+			BasicFileAttributes rAttr = Files.readAttributes(r.toPath(), BasicFileAttributes.class);
+			return lAttr.creationTime().compareTo(rAttr.creationTime());
+		} catch (IOException e) {
+			return 0;
+		}
+	};
+
+	public static final Comparator<File> BY_LAST_MODIFIED_TIME = (l, r) -> {
+		try {
+			BasicFileAttributes lAttr = Files.readAttributes(l.toPath(), BasicFileAttributes.class);
+			BasicFileAttributes rAttr = Files.readAttributes(r.toPath(), BasicFileAttributes.class);
+			return lAttr.lastModifiedTime().compareTo(rAttr.lastModifiedTime());
+		} catch (IOException e) {
+			return 0;
+		}
+	};
+
+	public static final Comparator<File> BY_LAST_ACCESS_TIME = (l, r) -> {
+		try {
+			BasicFileAttributes lAttr = Files.readAttributes(l.toPath(), BasicFileAttributes.class);
+			BasicFileAttributes rAttr = Files.readAttributes(r.toPath(), BasicFileAttributes.class);
+			return lAttr.lastAccessTime().compareTo(rAttr.lastAccessTime());
+		} catch (IOException e) {
+			return 0;
+		}
+	};
+
+	private FileUtil() {}
 
 	public static InputStream resolveResourceAsStream(String path) {
 		if (path.startsWith(CLASSPATH_PROTOCOL)) {
@@ -41,7 +82,7 @@ public class FileUtil {
 			}
 		}
 	}
-	
+
 	public static String resolveAbsolutePath(String path) {
 		if (path.startsWith(CLASSPATH_PROTOCOL)) {
 			return resolveClasspathProcotol(path);
@@ -73,7 +114,7 @@ public class FileUtil {
 
 	private static String resolveFilePath(String path) {
 		File file = new File(path);
-		if (file == null || !file.canRead()) {
+		if (!file.canRead()) {
 			return resolveClasspathProcotol(CLASSPATH_PROTOCOL + path);
 		} else {
 			return file.getAbsolutePath();
@@ -86,13 +127,13 @@ public class FileUtil {
 
 	public static String getRelativePath(File base, File file) {
 
-		List<String> bases = new LinkedList<String>();
+		List<String> bases = new LinkedList<>();
 		bases.add(0, base.getName());
 		for (File parent = base.getParentFile(); parent != null; parent = parent.getParentFile()) {
 			bases.add(0, parent.getName());
 		}
 
-		List<String> files = new LinkedList<String>();
+		List<String> files = new LinkedList<>();
 		files.add(0, file.getName());
 		for (File parent = file.getParentFile(); parent != null; parent = parent.getParentFile()) {
 			files.add(0, parent.getName());
@@ -139,7 +180,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param src
 	 * @param dest
 	 * @param moveSrcDir - move the src directory instead of files inside
@@ -151,7 +192,7 @@ public class FileUtil {
 
 	/**
 	 * move the file/director to destination directory, not rename
-	 * 
+	 *
 	 * @param srcFile
 	 * @param destDir
 	 * @param moveSrc - move the whole source if it is directory instead of files inside
@@ -165,7 +206,7 @@ public class FileUtil {
 		if (!destFile.exists() && !destFile.mkdirs()) {
 			return false;
 		}
-		
+
 		if (srcFile.isFile() || moveSrc) {
 			srcFile.renameTo(new File(destFile.getPath() + File.separator + srcFile.getName()));
 		} else {
@@ -174,5 +215,30 @@ public class FileUtil {
 			}
 		}
 		return true;
+	}
+
+	public static long crc32Checksum(byte[] data) {
+	    Checksum crc32 = new CRC32();
+	    crc32.update(data, 0, data.length);
+	    return crc32.getValue();
+	}
+
+	public static byte[] compress(byte[] in, int bufferSize) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(bufferSize);
+		try (GZIPOutputStream zip = new GZIPOutputStream(bos)) {
+			zip.write(in);
+			zip.finish();
+			return bos.toByteArray();
+		} catch (IOException e) {
+			throw new AFCException(e);
+		}
+	}
+
+	public static byte[] decompress(byte[] in) {
+		try (GZIPInputStream unzip = new GZIPInputStream(new ByteArrayInputStream(in))) {
+			return unzip.readAllBytes();
+		} catch (IOException e) {
+			throw new AFCException(e);
+		}
 	}
 }

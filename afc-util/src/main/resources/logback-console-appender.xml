@@ -4,7 +4,7 @@
 
 	<appender name="MAIN" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>${FILE_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} [${LOG_LEVEL_PATTERN:-%5p}][%5X{SDC}][%5.5tid][%-40.40logger{39}] : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}</pattern>
+			<pattern>${FILE_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS Z}} [${LOG_LEVEL_PATTERN:-%5p}][%8X{SDC}][%5.5tid][%-40.40logger{39}] : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}</pattern>
 		</encoder>
 	</appender>
 </included>

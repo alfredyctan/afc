@@ -40,7 +40,7 @@ public class XStreamStringXMLSerializer<O> implements XMLSerializer<O, String> {
 			} else {
 				xstream = new XStream();
 			}
-			
+
 			xstream.registerConverter(new XStreamCollectionConverter(xstream.getMapper()), 10);
 			xstream.aliasSystemAttribute(null, "class");
 			xstream.allowTypesByWildcard(packages);
@@ -55,37 +55,37 @@ public class XStreamStringXMLSerializer<O> implements XMLSerializer<O, String> {
 			});
 			aliases.forEach((a, c) -> {
 				logger.info("register alias [{}]:[{}]", a, c);
-				xstream.alias(a, c);	
+				xstream.alias(a, c);
 			});
 			classes.forEach(c -> {
 				logger.info("process xstream annotation [{}]", c.getName());
-				xstream.processAnnotations(c);	
+				xstream.processAnnotations(c);
 			});
 			return xstream;
 		};
 	};
-	
+
 	@Setter
 	private boolean formatted;
 
 	@Setter
 	private String namespace;
-	
+
 	@Setter
 	private String namespaceUrl;
-	
+
 	private String[] packages;
 
 	private String[] patterns;
-	
+
 	private List<Class<?>> classes;
-	
+
 	private Map<String, Class<?>> aliases;
 
 	private Map<Class<?>, String[]> omits;
 
 	private List<XStreamEnumConverter<?>> enums;
-	
+
 	public XStreamStringXMLSerializer(String... packages) {
 		this.formatted = true;
 		this.packages = packages;
@@ -110,13 +110,13 @@ public class XStreamStringXMLSerializer<O> implements XMLSerializer<O, String> {
 			return writer.toString();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public <S> S deserialize(String xml, Class<S> clazz) {
 		return (S)_xstream.get().fromXML(xml, ObjectUtil.newInstance(clazz));
 	}
-	
+
 	public XStreamStringXMLSerializer<O> alias(String alias, Class<?> clazz) {
 		aliases.put(alias, clazz);
 		return this;
@@ -126,7 +126,7 @@ public class XStreamStringXMLSerializer<O> implements XMLSerializer<O, String> {
 		omits.put(clazz, omit);
 		return this;
 	}
-	
+
 	public <E> XStreamStringXMLSerializer<O> enums(Class<E> clazz, Function<E, String> keyMapper) {
 		enums.add(new XStreamEnumConverter<>(clazz, keyMapper));
 		return this;

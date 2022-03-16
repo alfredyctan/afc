@@ -9,6 +9,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<modules>
+		<module>afc-junit5</module>
 		<module>afc-util</module>
 		<module>afc-swagger-model</module>
 		<module>afc-swagger3-api</module>

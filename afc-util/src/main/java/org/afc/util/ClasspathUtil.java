@@ -1,5 +1,4 @@
 package org.afc.util;
-
 import static org.afc.util.StringUtil.*;
 
 import java.io.File;
@@ -8,7 +7,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +17,8 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.afc.ClasspathException;
 
 public class ClasspathUtil {
 
@@ -31,10 +31,13 @@ public class ClasspathUtil {
 	private static final String JAR = ".jar";
 
 	private static final String CLASS = ".class";
-	
+
 	private static final Map<String, List<Class<?>>> packageClasses = new ConcurrentHashMap<>();
-	
-	public static void addSystemClasspath(String path) {
+
+	private ClasspathUtil() {}
+
+	@SuppressWarnings({"squid:S3878", "squid:S3011"})
+	public static void addSystemClasspath8(String path) {
 		try {
 			URL url = new File(path).toURI().toURL();
 			URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
@@ -47,22 +50,46 @@ public class ClasspathUtil {
 		}
 	}
 
+	@SuppressWarnings({"squid:S3878", "squid:S3011"})
+	public static void addSystemClasspath(String path) {
+		ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+		if (systemClassLoader instanceof URLClassLoader) {
+			try {
+				Method method = systemClassLoader.getClass().getDeclaredMethod("addURL", new Class[] { URL.class });
+				method.setAccessible(true);
+				URL url = new File(path).toURI().toURL();
+				method.invoke(systemClassLoader, new Object[] { url });
+			} catch (IOException | ReflectiveOperationException e) {
+				throw new ClasspathException("failed to add classpath", e);
+			}
+		} else {
+			try {
+				//--add-opens java.base/jdk.internal.loader=ALL-UNNAMED
+				Method method = systemClassLoader.getClass().getDeclaredMethod("appendToClassPathForInstrumentation", new Class[] { String.class });
+				method.setAccessible(true);
+				method.invoke(systemClassLoader, new Object[] { path });
+			} catch (ReflectiveOperationException e) {
+				throw new ClasspathException("failed to add classpath", e);
+			}
+		}
+	}
+
 	public static final List<Class<?>> findClasses(String packageName) {
 		return findClasses(packageName, true, false);
 	}
 
 	public static final List<Class<?>> findClasses(String packageName, boolean subPackage, boolean innerClass) {
 		List<Class<?>> classes = findInRegistry(packageName);
-		
-		if (classes.size() == 0) {
+
+		if (classes.isEmpty()) {
 			long start = ClockUtil.currentTimeMillis();
 			String[] classPaths = System.getProperty("java.class.path").split(PATH_SEPARATOR);
-			
+
 			for (String classpath : classPaths) {
 				if (classpath.endsWith(JAR)) {
 					scanClassesInJar(packageName, classpath);
 				} else {
-					scanClassesInDir(packageName, classpath); 
+					scanClassesInDir(packageName, classpath);
 				}
 			}
 			classes = findInRegistry(packageName);
@@ -75,20 +102,17 @@ public class ClasspathUtil {
 			if (!innerClass && c.getName().contains("$")) {
 				return false;
 			}
-			return (subPackage) ? classPackageName.startsWith(packageName) : classPackageName.equals(packageName); 
-		}).collect(Collectors.toList());
+			return (subPackage) ? classPackageName.startsWith(packageName) : classPackageName.equals(packageName);
+		}).distinct().collect(Collectors.toList());
 	}
 
 	private static void register(Class<?> clazz) {
 		String packageName = clazz.getPackage().getName();
-		List<Class<?>> clazzes = packageClasses.get(packageName);
-		if (clazzes == null) {
-			clazzes = new LinkedList<>();
-			packageClasses.put(packageName, clazzes);
-		}
+		List<Class<?>> clazzes = packageClasses.computeIfAbsent(packageName, k -> new LinkedList<>());
 		clazzes.add(clazz);
+		logger.debug("register:[{}]", clazz.getName());
 	}
-	
+
 	private static List<Class<?>> findInRegistry(String packageName) {
 		return packageClasses.entrySet().stream()
 			.filter(e -> e.getKey().startsWith(packageName))
@@ -97,20 +121,29 @@ public class ClasspathUtil {
 	}
 
 
+	@SuppressWarnings({"squid:S1181"})
 	private static void scanClassesInJar(String packageName, String classpath) {
 		File jarFile = new File(classpath);
-		packageName.replaceAll("\\.", "/"); // jar show class path
+		packageName = packageName.replaceAll("\\.", "/"); // jar show class path
 		try (JarInputStream is = new JarInputStream(new FileInputStream(jarFile))) {
-			for (JarEntry entry = is.getNextJarEntry(); entry != null; entry = is.getNextJarEntry()) {
-				String fullClassName = entry.getName().replaceAll("/", "\\.");
-				if (fullClassName.endsWith(CLASS) && fullClassName.startsWith(packageName)) {
-					register(Class.forName(rightCut(fullClassName, 6)));
-				}
-			}
+			scanJarStream(is, packageName);
 		} catch (Throwable t) {
+			// do nothing
 		}
 	}
-	
+
+	private static void scanJarStream(JarInputStream is, String packageName) throws IOException, ClassNotFoundException {
+		for (JarEntry entry = is.getNextJarEntry(); entry != null; entry = is.getNextJarEntry()) {
+			String jarEntryName = entry.getName();
+			if (jarEntryName.endsWith(CLASS) && jarEntryName.startsWith(packageName.replace('.', '/'))) {
+				register(Class.forName(rightCut(jarEntryName.replaceAll("/", "\\."), 6)));
+			} else if (jarEntryName.endsWith(JAR)) {
+				scanJarStream(new JarInputStream(FileUtil.resolveResourceAsStream(jarEntryName)), packageName);
+			}
+		}
+	}
+
+	@SuppressWarnings({"squid:S1075", "squid:S1181"})
 	private static void scanClassesInDir(String packageName, String classpath) {
 		String packagePath = packageName.replaceAll("\\.", "\\" + FILE_SEPARATOR);
 		try {
@@ -126,6 +159,7 @@ public class ClasspathUtil {
 				}
 			}
 		} catch (Throwable t) {
+			//do nothing
 		}
 	}
 }

@@ -1,11 +1,22 @@
 package org.afc.util;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
 public class IOUtil {
+
+	public static void close(Closeable closeable) {
+		if (closeable != null) {
+			try {
+				closeable.close();
+            } catch (IOException e) {
+	            throw new RuntimeException("Unable to close " + closeable.getClass().getSimpleName(), e);
+            }
+		}
+	}
 
 	public static void close(InputStream is) {
 		if (is != null) {
@@ -27,7 +38,7 @@ public class IOUtil {
 		}
 	}
 
-	
+
 	public static void close(Socket socket) {
 		if (socket != null) {
 			try {
@@ -37,8 +48,8 @@ public class IOUtil {
             }
 		}
 	}
-		
-	
+
+
 	public static void pipeInto(InputStream in, OutputStream out, int bufferSize) throws IOException {
     	byte[] buffer = new byte[bufferSize];
     	int len = -1;
